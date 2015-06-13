@@ -1,0 +1,28 @@
+{
+  "name": "chunky",
+  "version": "0.0.1",
+  "description": "An async upload/download node library leveraging express.js and socket.io. Provides standard, chunked, and udp style transfers.",
+  "main": "chunky.js",
+  "scripts": {
+    "test": "mocha test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Supernomad/chunky.git"
+  },
+  "keywords": [
+    "transfer",
+    "upload",
+    "download",
+    "chunked",
+    "file",
+    "multi-part",
+    "folder"
+  ],
+  "author": "supernomad <Christian Saide>",
+  "license": "GPL v3",
+  "bugs": {
+    "url": "https://github.com/Supernomad/chunky/issues"
+  },
+  "homepage": "https://github.com/Supernomad/chunky"
+}
