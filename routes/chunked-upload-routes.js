@@ -2,7 +2,7 @@ var apiModels = require('./../libs/models/apiModels'),
 	typeHelpers = require('./../libs/helpers/typeHelpers');
 	
 var	debug = false,
-	fileStore = null,
+	io = null,
 	dataCache = null;
 
 var routes = {
@@ -29,7 +29,7 @@ function configure(cache, storage, options) {
 		debug = options.debug;
 	}
 	
-	fileStore = storage;
+	io = storage;
 	dataCache = cache;
 	return routes;
 };
