@@ -1,7 +1,7 @@
 {
   "name": "chunky",
   "version": "0.0.1",
-  "description": "An async upload/download node library leveraging express.js and socket.io. Provides standard, chunked, and udp style transfers.",
+  "description": "An async upload/download nodejs library leveraging express.js and socket.io. Provides standard, chunked, and udp style transfers.",
   "main": "chunky.js",
   "scripts": {
     "test": "mocha test --reporter spec --ui bdd -w"
