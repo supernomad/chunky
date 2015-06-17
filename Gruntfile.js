@@ -31,5 +31,6 @@ module.exports = function(grunt) {
         }
     });
 
-    grunt.registerTask('default', ['mkdir:testDir', 'mocha_istanbul:coverage', 'coveralls:coverage']);
+    grunt.registerTask('build', ['mkdir:testDir', 'mocha_istanbul:coverage', 'coveralls:coverage']);
+    grunt.registerTask('default', ['mkdir:testDir', 'mocha_istanbul:coverage']);
 };

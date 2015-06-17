@@ -4,8 +4,7 @@
   "description": "An async upload/download nodejs library leveraging express.js and socket.io. Provides standard, chunked, and udp style transfers.",
   "main": "chunky.js",
   "scripts": {
-    "test": "grunt",
-    "coveralls": "cat ./coverage/lcov.info | ./node_modules/.bin/coveralls"
+    "test": "grunt build"
   },
   "repository": {
     "type": "git",
