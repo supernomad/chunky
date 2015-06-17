@@ -1,4 +1,4 @@
-var models = require('./../libs/models/apiModels'),
+var apiModels = require('./../libs/models/apiModels'),
 	typeHelpers = require('./../libs/helpers/typeHelpers');
 	
 var	debug = false,
@@ -6,19 +6,19 @@ var	debug = false,
 	dataCache = null;
 
 var routes = {
-	get: new models.RouteHandler("/chunked/upload/:uploadId", function (req, res) {
+	get: new apiModels.RouteHandler("/chunked/upload/:uploadId", function (req, res) {
 
 	}),
-	post: new models.RouteHandler("/chunked/upload", function (req, res) {
+	post: new apiModels.RouteHandler("/chunked/upload", function (req, res) {
 		
 	}),
-	put: new models.RouteHandler("/chunked/upload/:uploadId/:index", function (req, res) {
+	put: new apiModels.RouteHandler("/chunked/upload/:uploadId/:index", function (req, res) {
 		
 	}),
-	del: new models.RouteHandler("/chunked/upload/:uploadId", function (req, res) {
+	del: new apiModels.RouteHandler("/chunked/upload/:uploadId", function (req, res) {
 		
 	}),
-	err: new models.ErrorHandler(function (error, req, res, next) {
+	err: new apiModels.ErrorHandler(function (error, req, res, next) {
 
 	})
 };
@@ -32,5 +32,5 @@ function configure(cache, storage, options) {
 	fileStore = storage;
 	dataCache = cache;
 	return routes;
-};	
+};
 module.exports = configure;
