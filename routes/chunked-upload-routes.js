@@ -1,5 +1,6 @@
 var apiModels = require('./../libs/models/apiModels'),
-	typeHelper = require('./../libs/helpers/typeHelper');
+	typeHelper = require('./../libs/helpers/typeHelper'),
+	stringHelper = require('./../libs/helpers/stringHelper');
 	
 var	debug = false,
 	routePrefix = "/chunked/upload",
@@ -25,12 +26,13 @@ var routes = {
 };
 
 function configure(cache, storage, options) {
-	if(!typeHelper.isObject(options)) options = {};
-	if(options.hasOwnProperty('debug')){
-		debug = options.debug;
-	}
-	if(options.hasOwnProperty('routePrefix')){
-		routePrefix = options.routePrefix;
+	if(typeHelper.isObject(options)) {
+		if(options.hasOwnProperty('debug') && typeHelper.isBoolean(options.debug)){
+			debug = options.debug;
+		}
+		if(options.hasOwnProperty('routePrefix') && typeHelper.isString(options.routePrefix)){
+			routePrefix = stringHelper.stripTrailingSlashes(options.routePrefix);
+		}
 	}
 	
 	io = storage;
