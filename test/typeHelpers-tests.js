@@ -1,41 +1,41 @@
 /* global describe, it */
 var should = require('should'),
-	typeHelpers = require('./../libs/helpers/typeHelpers');
+	typeHelper = require('./../libs/helpers/typeHelper');
 
-describe('typeHelpers', function(){
+describe('typeHelper', function(){
   describe('#doesExist', function(){
     it('should return false when the value is null or undefined', function(){
-   	   	var test = typeHelpers.doesExist(null);
+   	   	var test = typeHelper.doesExist(null);
 		should.exist(test);
 		test.should.be.false;
 		
-		test = typeHelpers.doesExist(undefined);
+		test = typeHelper.doesExist(undefined);
 		should.exist(test);
 		test.should.be.false;
     });
 	
 	it('should return true when the value is any defined object', function(){
-   	   	var test = typeHelpers.doesExist({});
+   	   	var test = typeHelper.doesExist({});
 		should.exist(test);
 		test.should.be.true;
 		
-		test = typeHelpers.doesExist("");
+		test = typeHelper.doesExist("");
 		should.exist(test);
 		test.should.be.true;
 		
-		test = typeHelpers.doesExist(0);
+		test = typeHelper.doesExist(0);
 		should.exist(test);
 		test.should.be.true;
 		
-		test = typeHelpers.doesExist([]);
+		test = typeHelper.doesExist([]);
 		should.exist(test);
 		test.should.be.true;
 		
-		test = typeHelpers.doesExist(function() {});
+		test = typeHelper.doesExist(function() {});
 		should.exist(test);
 		test.should.be.true;
 		
-		test = typeHelpers.doesExist(true);
+		test = typeHelper.doesExist(true);
 		should.exist(test);
 		test.should.be.true;
     });
@@ -43,25 +43,25 @@ describe('typeHelpers', function(){
   
   describe('#isObject', function() {
 	 it('should return false when the value is not an object', function () {
-		var test = typeHelpers.isObject("");
+		var test = typeHelper.isObject("");
 		should.exist(test);
 		test.should.be.false;
 		
-		test = typeHelpers.isObject(0);
+		test = typeHelper.isObject(0);
 		should.exist(test);
 		test.should.be.false;
 		
-		test = typeHelpers.isObject(function() {});
+		test = typeHelper.isObject(function() {});
 		should.exist(test);
 		test.should.be.false;
 		
-		test = typeHelpers.isObject(true);
+		test = typeHelper.isObject(true);
 		should.exist(test);
 		test.should.be.false;
 	 });
 	 
 	 it('should return true when the value is an object', function() {
-		var test = typeHelpers.isObject({});
+		var test = typeHelper.isObject({});
 		should.exist(test);
 		test.should.be.true;
 	 });
@@ -69,25 +69,25 @@ describe('typeHelpers', function(){
   
     describe('#isFunction', function() {
 	 it('should return false when the value is not a function', function () {
-		var test = typeHelpers.isFunction("");
+		var test = typeHelper.isFunction("");
 		should.exist(test);
 		test.should.be.false;
 		
-		test = typeHelpers.isFunction(0);
+		test = typeHelper.isFunction(0);
 		should.exist(test);
 		test.should.be.false;
 		
-		test = typeHelpers.isFunction({});
+		test = typeHelper.isFunction({});
 		should.exist(test);
 		test.should.be.false;
 		
-		test = typeHelpers.isFunction(true);
+		test = typeHelper.isFunction(true);
 		should.exist(test);
 		test.should.be.false;
 	 });
 	 
 	 it('should return true when the value is a function', function() {
-		var test = typeHelpers.isFunction(function() {});
+		var test = typeHelper.isFunction(function() {});
 		should.exist(test);
 		test.should.be.true;
 	 });
@@ -95,25 +95,25 @@ describe('typeHelpers', function(){
   
   describe('#isString', function() {
 	 it('should return false when the value is not a string', function () {
-		var test = typeHelpers.isString(function () {});
+		var test = typeHelper.isString(function () {});
 		should.exist(test);
 		test.should.be.false;
 		
-		test = typeHelpers.isString(0);
+		test = typeHelper.isString(0);
 		should.exist(test);
 		test.should.be.false;
 		
-		test = typeHelpers.isString({});
+		test = typeHelper.isString({});
 		should.exist(test);
 		test.should.be.false;
 		
-		test = typeHelpers.isString(true);
+		test = typeHelper.isString(true);
 		should.exist(test);
 		test.should.be.false;
 	 });
 	 
 	 it('should return true when the value is a string', function() {
-		var test = typeHelpers.isString("");
+		var test = typeHelper.isString("");
 		should.exist(test);
 		test.should.be.true;
 	 });
@@ -121,25 +121,25 @@ describe('typeHelpers', function(){
   
   describe('#isBoolean', function() {
 	 it('should return false when the value is not a boolean', function () {
-		var test = typeHelpers.isBoolean(function () {});
+		var test = typeHelper.isBoolean(function () {});
 		should.exist(test);
 		test.should.be.false;
 		
-		test = typeHelpers.isBoolean(0);
+		test = typeHelper.isBoolean(0);
 		should.exist(test);
 		test.should.be.false;
 		
-		test = typeHelpers.isBoolean({});
+		test = typeHelper.isBoolean({});
 		should.exist(test);
 		test.should.be.false;
 		
-		test = typeHelpers.isBoolean("");
+		test = typeHelper.isBoolean("");
 		should.exist(test);
 		test.should.be.false;
 	 });
 	 
 	 it('should return true when the value is a boolean', function() {
-		var test = typeHelpers.isBoolean(true);
+		var test = typeHelper.isBoolean(true);
 		should.exist(test);
 		test.should.be.true;
 	 });
@@ -147,25 +147,25 @@ describe('typeHelpers', function(){
   
   describe('#isNumber', function() {
 	 it('should return false when the value is not a number', function () {
-		var test = typeHelpers.isNumber(function () {});
+		var test = typeHelper.isNumber(function () {});
 		should.exist(test);
 		test.should.be.false;
 		
-		test = typeHelpers.isNumber(true);
+		test = typeHelper.isNumber(true);
 		should.exist(test);
 		test.should.be.false;
 		
-		test = typeHelpers.isNumber({});
+		test = typeHelper.isNumber({});
 		should.exist(test);
 		test.should.be.false;
 		
-		test = typeHelpers.isNumber("");
+		test = typeHelper.isNumber("");
 		should.exist(test);
 		test.should.be.false;
 	 });
 	 
 	 it('should return true when the value is a number', function() {
-		var test = typeHelpers.isNumber(0);
+		var test = typeHelper.isNumber(0);
 		should.exist(test);
 		test.should.be.true;
 	 });
@@ -173,13 +173,13 @@ describe('typeHelpers', function(){
   
   describe('#isType', function() {
 	 it('should return false when the value is not the specified type', function () {
-		var test = typeHelpers.isType(new Date(), String);
+		var test = typeHelper.isType(new Date(), String);
 		should.exist(test);
 		test.should.be.false;
 	 });
 	 
 	 it('should return true when the value is the specified type', function() {
-		var test = typeHelpers.isType(new Date(), Date);
+		var test = typeHelper.isType(new Date(), Date);
 		should.exist(test);
 		test.should.be.true;
 	 });

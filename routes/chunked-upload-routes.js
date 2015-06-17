@@ -1,5 +1,5 @@
 var apiModels = require('./../libs/models/apiModels'),
-	typeHelpers = require('./../libs/helpers/typeHelpers');
+	typeHelper = require('./../libs/helpers/typeHelper');
 	
 var	debug = false,
 	routePrefix = "/chunked/upload",
@@ -25,7 +25,7 @@ var routes = {
 };
 
 function configure(cache, storage, options) {
-	if(!typeHelpers.isObject(options)) options = {};
+	if(!typeHelper.isObject(options)) options = {};
 	if(options.hasOwnProperty('debug')){
 		debug = options.debug;
 	}

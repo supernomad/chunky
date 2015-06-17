@@ -1,12 +1,12 @@
 /* global describe, it */
 var should = require('should'),
-	stringHelpers = require('./../libs/helpers/stringHelpers');
+	stringHelper = require('./../libs/helpers/stringHelper');
 	
-describe('stringHelpers.js', function() {	
+describe('stringHelper.js', function() {	
 	describe('#stripTrailingSlashes', function() {
 		it('should return the string unchanged if it does not have trailing slashes', function(){
 			var s = "testing";			
-			var test = stringHelpers.stripTrailingSlashes(s);
+			var test = stringHelper.stripTrailingSlashes(s);
 			should.exist(test);
 			test.should.equal(s);
 		});
@@ -15,7 +15,7 @@ describe('stringHelpers.js', function() {
 			var s = "testing\\\\\\";
 			var expected = "testing";
 			
-			var test = stringHelpers.stripTrailingSlashes(s);
+			var test = stringHelper.stripTrailingSlashes(s);
 			should.exist(test);
 			test.should.equal(expected);
 		});
@@ -24,7 +24,7 @@ describe('stringHelpers.js', function() {
 			var s = "testing///";
 			var expected = "testing";
 			
-			var test = stringHelpers.stripTrailingSlashes(s);
+			var test = stringHelper.stripTrailingSlashes(s);
 			should.exist(test);
 			test.should.equal(expected);
 		});
@@ -33,7 +33,7 @@ describe('stringHelpers.js', function() {
 			var s = "testing///\\\\\\";
 			var expected = "testing";
 			
-			var test = stringHelpers.stripTrailingSlashes(s);
+			var test = stringHelper.stripTrailingSlashes(s);
 			should.exist(test);
 			test.should.equal(expected);
 		});
@@ -42,23 +42,23 @@ describe('stringHelpers.js', function() {
 			var s = "";
 			var expected = s;
 			
-			var test = stringHelpers.stripTrailingSlashes(s);
+			var test = stringHelper.stripTrailingSlashes(s);
 			should.exist(test);
 			test.should.equal(expected);
 			
 			s = null;
 			expected = s;
-			test = stringHelpers.stripTrailingSlashes(s);
+			test = stringHelper.stripTrailingSlashes(s);
 			should.not.exist(test);
 			
 			s = undefined;
 			expected = s;
-			test = stringHelpers.stripTrailingSlashes(s);
+			test = stringHelper.stripTrailingSlashes(s);
 			should.not.exist(test);
 			
 			s = {};
 			expected = s;
-			test = stringHelpers.stripTrailingSlashes(s);
+			test = stringHelper.stripTrailingSlashes(s);
 			should.exist(s);
 			test.should.equal(s);
 		});
@@ -68,7 +68,7 @@ describe('stringHelpers.js', function() {
 		it('should return the string unchanged if it does not have leading slashes', function(){
 			var s = "testing";
 			
-			var test = stringHelpers.stripLeadingSlashes(s);
+			var test = stringHelper.stripLeadingSlashes(s);
 			should.exist(test);
 			test.should.equal(s);
 		});
@@ -77,7 +77,7 @@ describe('stringHelpers.js', function() {
 			var s = "\\\\\\testing";
 			var expected = "testing";
 			
-			var test = stringHelpers.stripLeadingSlashes(s);
+			var test = stringHelper.stripLeadingSlashes(s);
 			should.exist(test);
 			test.should.equal(expected);
 		});
@@ -86,7 +86,7 @@ describe('stringHelpers.js', function() {
 			var s = "///testing";
 			var expected = "testing";
 			
-			var test = stringHelpers.stripLeadingSlashes(s);
+			var test = stringHelper.stripLeadingSlashes(s);
 			should.exist(test);
 			test.should.equal(expected);
 		});
@@ -95,7 +95,7 @@ describe('stringHelpers.js', function() {
 			var s = "///\\\\\\testing";
 			var expected = "testing";
 			
-			var test = stringHelpers.stripLeadingSlashes(s);
+			var test = stringHelper.stripLeadingSlashes(s);
 			should.exist(test);
 			test.should.equal(expected);
 		});
@@ -104,23 +104,23 @@ describe('stringHelpers.js', function() {
 			var s = "";
 			var expected = s;
 			
-			var test = stringHelpers.stripLeadingSlashes(s);
+			var test = stringHelper.stripLeadingSlashes(s);
 			should.exist(test);
 			test.should.equal(expected);
 			
 			s = null;
 			expected = s;
-			test = stringHelpers.stripLeadingSlashes(s);
+			test = stringHelper.stripLeadingSlashes(s);
 			should.not.exist(test);
 			
 			s = undefined;
 			expected = s;
-			test = stringHelpers.stripLeadingSlashes(s);
+			test = stringHelper.stripLeadingSlashes(s);
 			should.not.exist(test);
 			
 			s = {};
 			expected = s;
-			test = stringHelpers.stripLeadingSlashes(s);
+			test = stringHelper.stripLeadingSlashes(s);
 			should.exist(s);
 			test.should.equal(s);
 		});
