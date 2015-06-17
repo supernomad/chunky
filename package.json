@@ -4,7 +4,8 @@
   "description": "An async upload/download nodejs library leveraging express.js and socket.io. Provides standard, chunked, and udp style transfers.",
   "main": "chunky.js",
   "scripts": {
-    "test": "mocha test --reporter spec --ui bdd -w"
+    "test": "mocha test --reporter spec --ui bdd -w",
+    "coverage": "istanbul cover .\\node_modules\\mocha\\bin\\_mocha -- test --ui bdd --reporter spec"
   },
   "repository": {
     "type": "git",
@@ -27,6 +28,7 @@
   "homepage": "https://github.com/Supernomad/chunky",
   "devDependencies": {
     "mocha": "~2.2.5",
-    "should": "~6.0.3"
+    "should": "~6.0.3",
+    "istanbul": "~0.3.15"
   }
 }
