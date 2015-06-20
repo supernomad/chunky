@@ -53,12 +53,64 @@ var routes = {
 	}),
 	"put": new apiModels.RouteHandler(routePrefix + "/:uploadId/:index", function (req, res) {
 		var valid = validator.validateChunkRequest(req);
+		var index = parseInt(req.params.index);
 		if(valid !== validator.valid) {
 			throw new errorModels.ValidationError(valid);
 		} else if (!guidHelper.isGuid(req.params.uploadId)){
 			throw new errorModels.ValidationError("The supplied uploadId is not a valid v4 GUID");	
+		} else if (!typeHelper.isNumber(index)) {
+			throw new errorModels.ValidationError("The supplied index is not a valid number");
 		}
 		
+		dataCache.restore(req.params.uploadId, function(error, upload) {
+			errorHelper.genericErrorHandler(error, debug);
+			var file = {};
+			for (var key in req.files) {
+				if (req.files.hasOwnProperty(key)) {
+					file = req.files[key];
+					break;
+				}
+			}
+			
+			function readCallback(error, data) {
+				errorHelper.genericErrorHandler(error, debug);
+				io.WriteFileChunk(upload.TempPath, data, 0, data.length, index * upload.ChunkSize, writeChunkCallback);
+			}
+
+			function writeChunkCallback(error) {
+				errorHelper.genericErrorHandler(error, debug);
+				if (upload.chunks.every(function(val){
+					return val === true;
+				})) 
+				{
+					io.RenameFile(upload.TempPath, upload.FinalPath, renameCallback);
+				} else {
+					res.json(new apiModels.ApiResponse(routePrefix, {}, "Chunk Recieved"));
+				}
+			}
+			
+			function renameCallback(error) {
+				errorHelper.genericErrorHandler(error, debug);
+				dataCache.remove(upload.id, function(error, count) {
+					errorHelper.genericErrorHandler(error, debug);
+				});
+				res.json(new apiModels.ApiResponse(routePrefix, {}, "Chunk Recieved"));
+			};
+			
+			if(upload) {
+				upload.chunks[index] = true;
+				dataCache.update(upload.Id, upload, function(error, success) {
+					errorHelper.genericErrorHandler(error, debug);
+					if(success) {
+						io.ReadFile(file.path, readCallback);
+					} else {
+						throw new errorModels.ServerError();
+					}
+				});
+			} else {
+				throw new errorModels.MissingCacheItem();
+			}
+		});
 	}),
 	"delete": new apiModels.RouteHandler(routePrefix + "/:uploadId", function (req, res) {
 		if (!guidHelper.isGuid(req.params.uploadId)){
