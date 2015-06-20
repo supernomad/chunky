@@ -4,7 +4,8 @@ var apiModels = require('./../libs/models/apiModels'),
 	guidHelper = require('./../libs/helpers/guidHelper'),
 	errorHelper = require('./../libs/helpers/errorHelper'),
 	typeHelper = require('./../libs/helpers/typeHelper'),
-	stringHelper = require('./../libs/helpers/stringHelper');
+	stringHelper = require('./../libs/helpers/stringHelper'),
+	validator = require('./../libs/validators/chunked-upload-validators');
 	
 var	debug = false,
 	routePrefix = "/chunked/upload",
@@ -14,6 +15,10 @@ var	debug = false,
 
 var routes = {
 	"get": new apiModels.RouteHandler(routePrefix + "/:uploadId", function (req, res) {
+		if (!guidHelper.isGuid(req.params.uploadId)){
+			throw new errorModels.ValidationError("The supplied uploadId is not a valid v4 GUID");	
+		}
+		
 		dataCache.restore(req.params.uploadId, function name(error, upload) {
 			errorHelper.genericErrorHandler(error, debug);
 			if(typeHelper.doesExist(upload)){
@@ -24,7 +29,10 @@ var routes = {
 		});
 	}),
 	"post": new apiModels.RouteHandler(routePrefix, function (req, res) {
-		// TODO: add validation of the request parameters
+		var valid = validator.validateUploadRequest(req.body);
+		if(valid !== validator.valid) {
+			throw new errorModels.ValidationError(valid);
+		}
 		
 		var upload = new apiModels.Upload(req.body);
 		upload.configure(guidHelper.newGuid());
@@ -44,10 +52,19 @@ var routes = {
 		});
 	}),
 	"put": new apiModels.RouteHandler(routePrefix + "/:uploadId/:index", function (req, res) {
-		// TODO: add validation of the request parameters
+		var valid = validator.validateChunkRequest(req);
+		if(valid !== validator.valid) {
+			throw new errorModels.ValidationError(valid);
+		} else if (!guidHelper.isGuid(req.params.uploadId)){
+			throw new errorModels.ValidationError("The supplied uploadId is not a valid v4 GUID");	
+		}
 		
 	}),
 	"delete": new apiModels.RouteHandler(routePrefix + "/:uploadId", function (req, res) {
+		if (!guidHelper.isGuid(req.params.uploadId)){
+			throw new errorModels.ValidationError("The supplied uploadId is not a valid v4 GUID");	
+		}
+		
 		dataCache.restore(req.params.uploadId, function name(error, upload) {
 			errorHelper.genericErrorHandler(error, debug);
 			if(typeHelper.doesExist(upload)){
@@ -66,8 +83,6 @@ var routes = {
 				throw new errorModels.MissingCacheItem();
 			}
 		});
-		
-
 	}),
 	"error": new apiModels.ErrorHandler(function (error, req, res, next) {
 

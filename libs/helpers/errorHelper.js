@@ -1,7 +1,7 @@
-function genericErrorHandler(error, debug = false) {
+function genericErrorHandler(error, debug) {
 	if(error) {
 		if(debug) console.error(error);
-		throw error;
+		throw new Error(JSON.stringify(error));
 	}
 }
 
