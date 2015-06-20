@@ -16,7 +16,7 @@ var	debug = false,
 var routes = {
 	"get": new apiModels.RouteHandler(routePrefix + "/:uploadId", function (req, res) {
 		if (!guidHelper.isGuid(req.params.uploadId)){
-			throw new errorModels.ValidationError("The supplied uploadId is not a valid v4 GUID");	
+			throw errorModels.ValidationError("The supplied uploadId is not a valid v4 GUID");	
 		}
 		
 		dataCache.restore(req.params.uploadId, function name(error, upload) {
@@ -24,14 +24,14 @@ var routes = {
 			if(typeHelper.doesExist(upload)){
 				res.json(new apiModels.ApiResponse(routePrefix, {}, upload.value));
 			} else {
-				throw new errorModels.MissingCacheItem();
+				throw errorModels.MissingCacheItem();
 			}
 		});
 	}),
 	"post": new apiModels.RouteHandler(routePrefix, function (req, res) {
 		var valid = validators.validateUploadRequest(req.body);
 		if(valid !== validators.valid) {
-			throw new errorModels.ValidationError(valid);
+			throw errorModels.ValidationError(valid);
 		}
 		
 		var upload = new apiModels.Upload(req.body);
@@ -47,7 +47,7 @@ var routes = {
 					res.json(new apiModels.ApiResponse(routePrefix, {}, upload.id));
 				});
 			} else {
-				throw new errorModels.ServerError();
+				throw errorModels.ServerError();
 			}
 		});
 	}),
@@ -55,16 +55,17 @@ var routes = {
 		var valid = validators.validateChunkRequest(req);
 		var index = parseInt(req.params.index);
 		if(valid !== validators.valid) {
-			throw new errorModels.ValidationError(valid);
+			throw errorModels.ValidationError(valid);
 		} else if (!guidHelper.isGuid(req.params.uploadId)){
-			throw new errorModels.ValidationError("The supplied uploadId is not a valid v4 GUID");	
+			throw errorModels.ValidationError("The supplied uploadId is not a valid v4 GUID");	
 		} else if (!typeHelper.isNumber(index)) {
-			throw new errorModels.ValidationError("The supplied index is not a valid number");
+			throw errorModels.ValidationError("The supplied index is not a valid number");
 		}
 		
-		dataCache.restore(req.params.uploadId, function(error, upload) {
+		dataCache.restore(req.params.uploadId, function(error, keyVal) {
 			errorHelper.genericErrorHandler(error, debug);
 			var file = {};
+			var upload = keyVal.value;
 			for (var key in req.files) {
 				if (req.files.hasOwnProperty(key)) {
 					file = req.files[key];
@@ -91,36 +92,38 @@ var routes = {
 			
 			function renameCallback(error) {
 				errorHelper.genericErrorHandler(error, debug);
-				dataCache.remove(upload.id, function(error, count) {
+				dataCache.delete(upload.id, function(error, count) {
 					errorHelper.genericErrorHandler(error, debug);
 				});
-				res.json(new apiModels.ApiResponse(routePrefix, {}, "Chunk Recieved"));
+
+				res.json(new apiModels.ApiResponse(routePrefix, {}, "Upload Complete"));
 			};
 			
 			if(upload) {
 				upload.chunks[index] = true;
-				dataCache.update(upload.Id, upload, function(error, success) {
+				dataCache.update(upload.Id, upload, defaultTtl, function(error, success) {
 					errorHelper.genericErrorHandler(error, debug);
+
 					if(success) {
 						io.ReadFile(file.path, readCallback);
 					} else {
-						throw new errorModels.ServerError();
+						throw errorModels.ServerError();
 					}
 				});
 			} else {
-				throw new errorModels.MissingCacheItem();
+				throw errorModels.MissingCacheItem();
 			}
 		});
 	}),
 	"delete": new apiModels.RouteHandler(routePrefix + "/:uploadId", function (req, res) {
 		if (!guidHelper.isGuid(req.params.uploadId)){
-			throw new errorModels.ValidationError("The supplied uploadId is not a valid v4 GUID");	
+			throw errorModels.ValidationError("The supplied uploadId is not a valid v4 GUID");	
 		}
 		
 		dataCache.restore(req.params.uploadId, function name(error, upload) {
 			errorHelper.genericErrorHandler(error, debug);
 			if(typeHelper.doesExist(upload)){
-				dataCache.remove(upload.id, function (error, count) {
+				dataCache.delete(upload.id, function (error, count) {
 					errorHelper.genericErrorHandler(error);
 					if(count ===  1) {
 						io.DeleteFile(upload.tempPath, function(deleteError) {
@@ -128,11 +131,11 @@ var routes = {
 							res.json(new apiModels.ApiResponse(routePrefix, {}, "Upload: " + req.params.uploadId + ", deleted successfuly."));
 						});
 					} else {
-						throw new errorModels.MissingCacheItem();
+						throw errorModels.MissingCacheItem();
 					}
 				});
 			} else {
-				throw new errorModels.MissingCacheItem();
+				throw errorModels.MissingCacheItem();
 			}
 		});
 	}),
