@@ -1,6 +1,6 @@
 var NodeCache = require('node-cache'),
 	cache = new NodeCache({ stdTTL: 0, checkperiod: 300, useClones: false }),
-	typeHelper = require('./../helpers/typeHelper');
+	typeHelper = require.main.require('libs/helpers/typeHelper');
 
 function create(key, val, ttl, callback) {
 	if(typeHelper.isFunction(callback)) {

@@ -1,4 +1,4 @@
-var typeHelper = require('./../helpers/typeHelper');
+var typeHelper = require.main.require('libs/helpers/typeHelper');
 
 var valid = "valid";
 

@@ -1,6 +1,6 @@
-var apiModels = require('./../libs/models/apiModels'),
-	typeHelper = require('./../libs/helpers/typeHelper'),
-	stringHelper = require('./../libs/helpers/stringHelper');
+var apiModels = require.main.require('libs/models/apiModels'),
+	typeHelper = require.main.require('libs/helpers/typeHelper'),
+	stringHelper = require.main.require('libs/helpers/stringHelper');
 	
 var	debug = false,
 	routePrefix = "/chunked/download",

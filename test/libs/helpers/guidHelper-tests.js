@@ -1,6 +1,6 @@
 /* global describe, it */
 var should = require('should'),
-	guidHelper = require('./../../../libs/helpers/guidHelper');
+	guidHelper = require.main.require('libs/helpers/guidHelper');
 	
 describe('guidHelper.js', function() {
 	describe('#newGuid', function() {

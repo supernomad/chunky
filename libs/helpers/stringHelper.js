@@ -1,4 +1,4 @@
-var typeHelper = require('./typeHelper');
+var typeHelper = require.main.require('libs/helpers/typeHelper');
 
 function stripTrailingSlashes(str) {
 	if(!typeHelper.isString(str)) return str;

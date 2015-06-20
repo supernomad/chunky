@@ -1,6 +1,6 @@
 /* global describe, it , Buffer */
-var io = require('./../../libs/io'),
-	should = require('should'),
+var should = require('should'),
+	io = require.main.require('libs/io'),
 	tempFile = "./tmp/tests/tmp.temp",
 	renameFile = "./tmp/tests/temp-rename.temp";
 

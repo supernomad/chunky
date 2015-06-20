@@ -1,6 +1,6 @@
 /* global describe, it */
 var should = require('should'),
-	typeHelper = require('./../../../libs/helpers/typeHelper');
+	typeHelper = require.main.require('libs/helpers/typeHelper');
 
 describe('typeHelper', function(){
   describe('#doesExist', function(){
