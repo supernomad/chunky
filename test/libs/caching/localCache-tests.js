@@ -1,6 +1,6 @@
 /* global describe, it */
 var should = require('should'),
-	localCache = require('./../libs/caching/localCache');
+	localCache = require('./../../../libs/caching/localCache');
 	
 describe('localCache.js', function () {
 	describe('#create', function () {

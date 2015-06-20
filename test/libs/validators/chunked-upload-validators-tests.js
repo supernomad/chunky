@@ -1,6 +1,6 @@
 /* global describe, it */
 var should = require('should'),
-	validators = require('./../libs/validators/chunked-upload-validators.js');
+	validators = require('./../../../libs/validators/chunked-upload-validators.js');
 	
 describe("chunked-upload-validators.js", function () {
 	describe("#valid", function () {

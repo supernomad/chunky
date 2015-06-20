@@ -1,6 +1,6 @@
 /* global describe, it */
 var should = require('should'),
-	stringHelper = require('./../libs/helpers/stringHelper');
+	stringHelper = require('./../../../libs/helpers/stringHelper');
 	
 describe('stringHelper.js', function() {	
 	describe('#stripTrailingSlashes', function() {

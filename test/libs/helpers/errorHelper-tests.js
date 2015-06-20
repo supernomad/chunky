@@ -1,6 +1,6 @@
 /* global describe, it */
 var should = require('should'),
-	errorHelper = require('./../libs/helpers/errorHelper');
+	errorHelper = require('./../../../libs/helpers/errorHelper');
 	
 describe('errorHelper.js', function() {
 	describe('#genericErrorHandler', function() {
