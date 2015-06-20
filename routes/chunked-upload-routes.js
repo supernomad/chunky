@@ -5,7 +5,7 @@ var apiModels = require('./../libs/models/apiModels'),
 	errorHelper = require('./../libs/helpers/errorHelper'),
 	typeHelper = require('./../libs/helpers/typeHelper'),
 	stringHelper = require('./../libs/helpers/stringHelper'),
-	validator = require('./../libs/validators/chunked-upload-validators');
+	validators = require('./../libs/validators/chunked-upload-validators');
 	
 var	debug = false,
 	routePrefix = "/chunked/upload",
@@ -29,8 +29,8 @@ var routes = {
 		});
 	}),
 	"post": new apiModels.RouteHandler(routePrefix, function (req, res) {
-		var valid = validator.validateUploadRequest(req.body);
-		if(valid !== validator.valid) {
+		var valid = validators.validateUploadRequest(req.body);
+		if(valid !== validators.valid) {
 			throw new errorModels.ValidationError(valid);
 		}
 		
@@ -52,9 +52,9 @@ var routes = {
 		});
 	}),
 	"put": new apiModels.RouteHandler(routePrefix + "/:uploadId/:index", function (req, res) {
-		var valid = validator.validateChunkRequest(req);
+		var valid = validators.validateChunkRequest(req);
 		var index = parseInt(req.params.index);
-		if(valid !== validator.valid) {
+		if(valid !== validators.valid) {
 			throw new errorModels.ValidationError(valid);
 		} else if (!guidHelper.isGuid(req.params.uploadId)){
 			throw new errorModels.ValidationError("The supplied uploadId is not a valid v4 GUID");	
