@@ -137,7 +137,15 @@ var routes = {
 		});
 	}),
 	"error": new apiModels.ErrorHandler(function (error, req, res, next) {
-
+			if(error instanceof errorModels.GenericError) {
+				res.status(error.Code);
+				res.json({
+					Error: error.Error,
+					Message: error.Message
+				});
+			} else {
+				next();
+			}
 	})
 };
 
