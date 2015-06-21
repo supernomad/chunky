@@ -101,6 +101,35 @@ describe("chunked-upload-routes.js", function() {
 			});
 		});
 		
+		it('should throw a DownloadMissing error if the supplied downloadId does not exist', function() {
+			cache_mock.setReturnValue(false);
+			(function() {
+				routes.get.handler({
+					params: {
+						downloadId: guidHelper.newGuid(),
+						index: 0
+					}
+				}, {
+					send: function(buffer) {
+					}
+				});
+			}).should.throw(errorModels.GenericError);
+		});
+		
+		it('should throw a DownloadMissing error if the supplied downloadId does not exist', function() {
+			(function() {
+				routes.get.handler({
+					params: {
+						downloadId: guidHelper.newGuid(),
+						index: 0
+					}
+				}, {
+					send: function(buffer) {
+					}
+				});
+			}).should.throw(errorModels.GenericError);
+		});
+		
 		it('should throw a ValidationError if the supplied downloadId is not a valid v4 GUID', function() {
 			(function() {
 				routes.get.handler({
