@@ -30,7 +30,8 @@ var routes = {
 					buffer = new Buffer(chunkSize);
 				
 				function readCallback(error, read, buffer) {
-					
+					errorHelper.genericErrorHandler(error);
+					res.send(buffer);
 				}
 				
 				download.chunks[index] = true;
