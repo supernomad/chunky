@@ -64,7 +64,6 @@ var routes = {
 		
 		dataCache.restore(req.params.uploadId, function(error, keyVal) {
 			if(typeHelper.doesExist(keyVal.value)) {
-				console.log(keyVal);
 				errorHelper.genericErrorHandler(error, debug);
 				var file = {};
 				var upload = keyVal.value;
