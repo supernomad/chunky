@@ -101,12 +101,12 @@ describe("chunked-upload-routes.js", function() {
 			});
 		});
 		
-		it('should throw a DownloadMissing error if the supplied downloadId does not exist', function() {
+		it('should throw a ServerError if the cache fails to store the download data', function() {
 			cache_mock.setReturnValue(false);
 			(function() {
 				routes.get.handler({
 					params: {
-						downloadId: guidHelper.newGuid(),
+						downloadId: downloadId,
 						index: 0
 					}
 				}, {
