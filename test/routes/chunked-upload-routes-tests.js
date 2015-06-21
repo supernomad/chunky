@@ -121,7 +121,7 @@ describe("chunked-upload-routes.js", function() {
 			}).should.throw(errorModels.GenericError);;
 		});
 		
-		it('should throw a MissingCacheItem error if the supplied uploadId does not exist', function() {
+		it('should throw a UploadMissing error if the supplied uploadId does not exist', function() {
 			(function() {
 				routes.get.handler({
 					params: {
@@ -261,7 +261,7 @@ describe("chunked-upload-routes.js", function() {
 			}).should.throw(errorModels.GenericError);;
 		});
 		
-		it('should throw a MissingCacheItem error if the supplied uploadId does not exist', function() {
+		it('should throw a UploadMissing error if the supplied uploadId does not exist', function() {
 			(function() {
 				routes.put.handler({
 					params: {
@@ -321,7 +321,7 @@ describe("chunked-upload-routes.js", function() {
 			}).should.throw(errorModels.GenericError);;
 		});
 		
-		it('should throw a MissingCacheItem error if the supplied uploadId does not exist', function() {
+		it('should throw a UploadMissing error if the supplied uploadId does not exist', function() {
 			(function() {
 				routes.delete.handler({
 					params: {
@@ -344,7 +344,7 @@ describe("chunked-upload-routes.js", function() {
 		});
 		
 		it('should handle any custom errors', function(done) {
-			routes.error.handler(errorModels.MissingCacheItem(), null, {
+			routes.error.handler(errorModels.UploadMissing(), null, {
 				status: function(status) {
 					should.exist(status);
 					status.should.be.a.Number;

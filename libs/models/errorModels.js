@@ -5,7 +5,7 @@ function GenericError(code, error, message) {
 	self.Message = message;
 }
 
-function missingCacheItem() {
+function uploadMissing() {
 	return new GenericError(404, "Missing Upload Error", "The upload specified could not be found, please check the supplied id and try again.");
 }
 
@@ -19,7 +19,7 @@ function validationError(msg) {
 
 module.exports = {
 	GenericError: GenericError,
-	MissingCacheItem: missingCacheItem,
+	UploadMissing: uploadMissing,
 	ServerError: serverError,
 	ValidationError: validationError
 };

@@ -24,7 +24,7 @@ var routes = {
 			if(typeHelper.doesExist(upload.value)){
 				res.json(new apiModels.ApiResponse(routePrefix, {}, upload.value));
 			} else {
-				throw errorModels.MissingCacheItem();
+				throw errorModels.UploadMissing();
 			}
 		});
 	}),
@@ -112,7 +112,7 @@ var routes = {
 					}
 				});
 			} else {
-				throw errorModels.MissingCacheItem();
+				throw errorModels.UploadMissing();
 			}
 		});
 	}),
@@ -136,24 +136,24 @@ var routes = {
 		});
 	}),
 	"error": new apiModels.ErrorHandler(function (error, req, res, next) {
-			if(error instanceof errorModels.GenericError) {
-				res.status(error.Code);
-				res.json({
-					Error: error.Error,
-					Message: error.Message
-				});
-			} else {
-				next();
-			}
+		if(error instanceof errorModels.GenericError) {
+			res.status(error.Code);
+			res.json({
+				Error: error.Error,
+				Message: error.Message
+			});
+		} else {
+			next();
+		}
 	})
 };
 
 function configure(cache, storage, options) {
 	if(typeHelper.isObject(options)) {
-		if(options.hasOwnProperty('debug') && typeHelper.isBoolean(options.debug)){
+		if(typeHelper.isBoolean(options.debug)){
 			debug = options.debug;
 		}
-		if(options.hasOwnProperty('routePrefix') && typeHelper.isString(options.routePrefix)){
+		if(typeHelper.isString(options.routePrefix)){
 			routePrefix = stringHelper.stripTrailingSlashes(options.routePrefix);
 		}
 	}
