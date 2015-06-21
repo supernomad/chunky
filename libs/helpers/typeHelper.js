@@ -1,5 +1,5 @@
 function doesExist(obj) {
-	return obj != null && obj != undefined && obj != NaN;
+	return obj != null && obj != undefined && !isNaN(obj);
 }
 
 function isObject(obj) {
