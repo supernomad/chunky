@@ -46,6 +46,25 @@ describe("chunked-upload-routes.js", function() {
 			});
 		});
 		
+		it('should throw a ServerError if the cache fails to store the upload data', function() {
+			cache_mock.returnValue = false;
+			(function() {
+				routes.post.handler({
+					body: {
+						fileName: "Testing.txt",
+						fileSize: 2048,
+						chunkSize: 1024,
+						count: 2,
+						destination: "Test/destination"
+					}
+				},	{ 
+					json: function(data) {
+					}
+				});
+			}).should.throw();
+			cache_mock.returnValue = true;
+		});
+		
 		it('should throw a ValidationError if the request object is considered invalid', function() {
 			(function() {
 				routes.post.handler({
