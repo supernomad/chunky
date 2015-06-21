@@ -21,7 +21,7 @@ var routes = {
 		
 		dataCache.restore(req.params.uploadId, function name(error, upload) {
 			errorHelper.genericErrorHandler(error, debug);
-			if(typeHelper.doesExist(upload)){
+			if(typeHelper.doesExist(upload.value)){
 				res.json(new apiModels.ApiResponse(routePrefix, {}, upload.value));
 			} else {
 				throw errorModels.MissingCacheItem();
@@ -122,21 +122,16 @@ var routes = {
 		
 		dataCache.restore(req.params.uploadId, function name(error, upload) {
 			errorHelper.genericErrorHandler(error, debug);
-			if(typeHelper.doesExist(upload)){
-				dataCache.delete(upload.id, function (error, count) {
-					errorHelper.genericErrorHandler(error);
-					if(count ===  1) {
-						io.DeleteFile(upload.tempPath, function(deleteError) {
-							errorHelper.genericErrorHandler(deleteError);
-							res.json(new apiModels.ApiResponse(routePrefix, {}, "Upload: " + req.params.uploadId + ", deleted successfuly."));
-						});
-					} else {
-						throw errorModels.MissingCacheItem();
-					}
-				});
-			} else {
-				throw errorModels.MissingCacheItem();
-			}
+
+			dataCache.delete(upload.id, function (error, count) {
+				errorHelper.genericErrorHandler(error);
+				if(count ===  1) {
+					io.DeleteFile(upload.tempPath, function(deleteError) {
+						errorHelper.genericErrorHandler(deleteError);
+						res.json(new apiModels.ApiResponse(routePrefix, {}, "Upload: " + req.params.uploadId + ", deleted successfuly."));
+					});
+				}
+			});
 		});
 	}),
 	"error": new apiModels.ErrorHandler(function (error, req, res, next) {

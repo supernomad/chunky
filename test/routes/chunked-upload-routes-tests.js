@@ -1,6 +1,7 @@
 /* global describe, it */
 var	should = require('should'),
-	errorModels = require.main.require('libs/models/errorModels');
+	errorModels = require.main.require('libs/models/errorModels'),
+	guidHelper = require.main.require('libs/helpers/guidHelper');
 	
 describe("chunked-upload-routes.js", function() {
 	var io_mock = require.main.require('mocks/libs/io'),
@@ -89,6 +90,19 @@ describe("chunked-upload-routes.js", function() {
 				routes.get.handler({
 					params: {
 						uploadId: "uploadId"
+					}
+				},	{
+					json: function(data) {
+					}
+				});
+			}).should.throw();
+		});
+		
+		it('should throw a MissingCacheItem error if the supplied uploadId does not exist', function() {
+			(function() {
+				routes.get.handler({
+					params: {
+						uploadId: guidHelper.newGuid()
 					}
 				},	{
 					json: function(data) {
@@ -185,6 +199,25 @@ describe("chunked-upload-routes.js", function() {
 				});
 			}).should.throw();
 		});
+		
+		it('should throw a MissingCacheItem error if the supplied uploadId does not exist', function() {
+			(function() {
+				routes.put.handler({
+					params: {
+						uploadId: guidHelper.newGuid(),
+						index: "woot"
+					},
+					files: {
+						testFile: {
+							path: "random/path/to/nothing"
+						}
+					}
+				},	{
+					json: function(data) {
+					}
+				});
+			}).should.throw();
+		});
 	});
 	
 	describe("#DELETE", function() {
@@ -215,6 +248,19 @@ describe("chunked-upload-routes.js", function() {
 		});
 		
 		it('should throw a ValidationError if the supplied uploadId is considered invalid', function() {
+			(function() {
+				routes.delete.handler({
+					params: {
+						uploadId: "uploadId"
+					}
+				},	{
+					json: function(data) {
+					}
+				});
+			}).should.throw();
+		});
+		
+		it('should throw a MissingCacheItem error if the supplied uploadId does not exist', function() {
 			(function() {
 				routes.delete.handler({
 					params: {
