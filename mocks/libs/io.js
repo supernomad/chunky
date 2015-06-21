@@ -1,6 +1,12 @@
 /* global Buffer */
 var fs = require('fs');
 
+function getFileStats(path, callback) {
+	callback(null, {
+		size: 1024
+	});
+}
+
 function createFile(path, buffer, offset, length, callback) {
 	callback(null);
 }
@@ -22,6 +28,7 @@ function renameFile(path, newPath, callback) {
 }
 
 module.exports = {
+	GetFileStats: getFileStats,
 	CreateFile: createFile,
 	WriteFileChunk: writeFileChunk,
 	DeleteFile: deleteFile,

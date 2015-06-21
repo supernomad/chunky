@@ -49,16 +49,17 @@ var routes = {
 		});
 	}),
 	"post": new apiModels.RouteHandler(routePrefix, function (req, res) {
-		var valid = validators.validateUploadRequest(req.body);
+		var valid = validators.validateDownloadRequest(req.body);
 		if(valid !== validators.valid) {
 			throw errorModels.ValidationError(valid);
 		}
-		io.getFileStats(req.body.path, function(error, stats) {
+		io.GetFileStats(req.body.path, function(error, stats) {
+			errorHelper.genericErrorHandler(error);
 			var download = new apiModels.Download(req.body, stats.size, chunkSize);
 			download.configure(guidHelper.newGuid());
 			
-			dataCache.create(download.id, download, defaultTtl, function (error, success) {
-				errorHelper.genericErrorHandler(error);
+			dataCache.create(download.id, download, defaultTtl, function (createError, success) {
+				errorHelper.genericErrorHandler(createError);
 				if(success) {
 					res.json(new apiModels.ApiResponse(routePrefix, {}, download));
 				} else {
@@ -103,7 +104,7 @@ function configure(cache, storage, options) {
 			routePrefix = stringHelper.stripTrailingSlashes(options.routePrefix);
 		}
 		if(typeHelper.isNumber(options.chunkSize)) {
-			chunkSize = options.chunkSize
+			chunkSize = options.chunkSize;
 		}
 	}
 	

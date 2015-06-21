@@ -4,7 +4,6 @@ var	should = require('should'),
 	guidHelper = require.main.require('libs/helpers/guidHelper');
 	
 describe("chunked-upload-routes.js", function() {
-	
 	var io_mock = require.main.require('mocks/libs/io'),
 		cache_mock = require.main.require('mocks/libs/caching/localCache'),
 		routes = require.main.require('routes/chunked-upload-routes')(cache_mock, io_mock, {debug:true, routePrefix:"/chunked/upload"}),
@@ -164,7 +163,7 @@ describe("chunked-upload-routes.js", function() {
 						}
 					});
 			}).should.throw(errorModels.GenericError);
-		})
+		});
 		
 		it('should upload a file chunk and associate it with the specified upload', function(done) {
 			routes.put.handler({
