@@ -27,11 +27,16 @@ function renameFile(path, newPath, callback) {
 	callback(null);
 }
 
+function readFileChunk(path, buffer, offset, length, position, callback) {	
+	callback(null, buffer.length, buffer);
+}
+
 module.exports = {
 	GetFileStats: getFileStats,
 	CreateFile: createFile,
 	WriteFileChunk: writeFileChunk,
 	DeleteFile: deleteFile,
 	ReadFile: readFile,
+	ReadFileChunk: readFileChunk,
 	RenameFile: renameFile
 };

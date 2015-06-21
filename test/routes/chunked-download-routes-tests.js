@@ -6,7 +6,7 @@ var	should = require('should'),
 describe("chunked-upload-routes.js", function() {
 	var io_mock = require.main.require('mocks/libs/io'),
 		cache_mock = require.main.require('mocks/libs/caching/localCache'),
-		routes = require.main.require('routes/chunked-download-routes')(cache_mock, io_mock, {debug:true, routePrefix:"/chunked/download"}),
+		routes = require.main.require('routes/chunked-download-routes')(cache_mock, io_mock, {debug:true, routePrefix:"/chunked/download", chunkSize: 1024}),
 		downloadId = null;
 	
 	afterEach('reset the cache_mock', function() {
@@ -84,6 +84,49 @@ describe("chunked-upload-routes.js", function() {
 			
 			should.exist(routes.get.handler);
 			routes.get.handler.should.be.a.Function;
+		});
+		
+		it('should get the specified chunk from the specified download file', function(done) {
+			routes.get.handler({
+				params: {
+					downloadId: downloadId,
+					index: 0
+				}
+			}, {
+				send: function(buffer) {
+					should.exist(buffer);
+					buffer.should.be.an.Buffer;
+					done();
+				}
+			});
+		});
+		
+		it('should throw a ValidationError if the supplied downloadId is not a valid v4 GUID', function() {
+			(function() {
+				routes.get.handler({
+					params: {
+						downloadId: "downloadId",
+						index: 0
+					}
+				}, {
+					send: function(buffer) {
+					}
+				});
+			}).should.throw(errorModels.GenericError);
+		});
+
+		it('should throw a ValidationError if the supplied index is not a valid number >= 0', function() {
+			(function() {
+				routes.get.handler({
+					params: {
+						downloadId: downloadId,
+						index: ""
+					}
+				}, {
+					send: function(buffer) {
+					}
+				});
+			}).should.throw(errorModels.GenericError);
 		});
 	});
 	
