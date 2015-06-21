@@ -216,7 +216,7 @@ describe("chunked-upload-routes.js", function() {
 		
 		it('should throw a ValidationError if the supplied uploadId is considered invalid', function() {
 			(function() {
-				routes.put.handler({
+				routes.delete.handler({
 					params: {
 						uploadId: "uploadId"
 					}
