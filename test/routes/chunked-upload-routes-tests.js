@@ -1,13 +1,18 @@
-/* global describe, it */
+/* global describe, it, afterEach */
 var	should = require('should'),
 	errorModels = require.main.require('libs/models/errorModels'),
 	guidHelper = require.main.require('libs/helpers/guidHelper');
 	
 describe("chunked-upload-routes.js", function() {
+	
 	var io_mock = require.main.require('mocks/libs/io'),
 		cache_mock = require.main.require('mocks/libs/caching/localCache'),
 		routes = require.main.require('routes/chunked-upload-routes')(cache_mock, io_mock, {debug:true, routePrefix:"/chunked/upload"}),
 		uploadId = null;
+	
+	afterEach('reset the cache_mock', function() {
+		cache_mock.setReturnValue(true);
+	});
 	
 	it('should return a route object', function() {
 		should.exist(routes);
@@ -47,7 +52,7 @@ describe("chunked-upload-routes.js", function() {
 		});
 		
 		it('should throw a ServerError if the cache fails to store the upload data', function() {
-			cache_mock.returnValue = false;
+			cache_mock.setReturnValue(false);
 			(function() {
 				routes.post.handler({
 					body: {
@@ -61,8 +66,7 @@ describe("chunked-upload-routes.js", function() {
 					json: function(data) {
 					}
 				});
-			}).should.throw();
-			cache_mock.returnValue = true;
+			}).should.throw(errorModels.GenericError);;
 		});
 		
 		it('should throw a ValidationError if the request object is considered invalid', function() {
@@ -74,7 +78,7 @@ describe("chunked-upload-routes.js", function() {
 					json: function(data) {
 					}
 				});
-			}).should.throw();
+			}).should.throw(errorModels.GenericError);;
 		});
 	});
 	
@@ -114,7 +118,7 @@ describe("chunked-upload-routes.js", function() {
 					json: function(data) {
 					}
 				});
-			}).should.throw();
+			}).should.throw(errorModels.GenericError);;
 		});
 		
 		it('should throw a MissingCacheItem error if the supplied uploadId does not exist', function() {
@@ -127,7 +131,7 @@ describe("chunked-upload-routes.js", function() {
 					json: function(data) {
 					}
 				});
-			}).should.throw();
+			}).should.throw(errorModels.GenericError);;
 		});
 	});
 	
@@ -141,6 +145,26 @@ describe("chunked-upload-routes.js", function() {
 			should.exist(routes.put.handler);
 			routes.put.handler.should.be.a.Function;
 		});
+		
+		it('should throw a ServerError when the specified uploadId does not exist', function() {
+			cache_mock.setReturnValue(false);
+			(function() {
+				routes.put.handler({
+						params: {
+							uploadId: uploadId,
+							index: 0
+						},
+						files: {
+							testFile: {
+								path: "random/path/to/nothing"
+							}
+						}
+					}, {
+						json: function(data) {
+						}
+					});
+			}).should.throw(errorModels.GenericError);
+		})
 		
 		it('should upload a file chunk and associate it with the specified upload', function(done) {
 			routes.put.handler({
@@ -196,7 +220,7 @@ describe("chunked-upload-routes.js", function() {
 					json: function(data) {
 					}
 				});
-			}).should.throw();
+			}).should.throw(errorModels.GenericError);;
 		});
 		
 		it('should throw a ValidationError if the supplied uploadId is considered invalid', function() {
@@ -215,7 +239,7 @@ describe("chunked-upload-routes.js", function() {
 					json: function(data) {
 					}
 				});
-			}).should.throw();
+			}).should.throw(errorModels.GenericError);;
 		});
 		
 		it('should throw a ValidationError if the supplied index is considered invalid', function() {
@@ -234,7 +258,7 @@ describe("chunked-upload-routes.js", function() {
 					json: function(data) {
 					}
 				});
-			}).should.throw();
+			}).should.throw(errorModels.GenericError);;
 		});
 		
 		it('should throw a MissingCacheItem error if the supplied uploadId does not exist', function() {
@@ -253,7 +277,7 @@ describe("chunked-upload-routes.js", function() {
 					json: function(data) {
 					}
 				});
-			}).should.throw();
+			}).should.throw(errorModels.GenericError);;
 		});
 	});
 	
@@ -294,7 +318,7 @@ describe("chunked-upload-routes.js", function() {
 					json: function(data) {
 					}
 				});
-			}).should.throw();
+			}).should.throw(errorModels.GenericError);;
 		});
 		
 		it('should throw a MissingCacheItem error if the supplied uploadId does not exist', function() {
@@ -307,7 +331,7 @@ describe("chunked-upload-routes.js", function() {
 					json: function(data) {
 					}
 				});
-			}).should.throw();
+			}).should.throw(errorModels.GenericError);;
 		});
 	});
 	

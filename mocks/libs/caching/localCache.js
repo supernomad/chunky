@@ -2,6 +2,9 @@ var	typeHelper = require.main.require('libs/helpers/typeHelper'),
 	cache = {},
 	returnValue = true;
 	
+function setReturnValue(retValue) {
+	returnValue = retValue;
+}	
 function create(key, val, ttl, callback) {
 	cache[key] = val;
 	callback(null, returnValue);
@@ -21,7 +24,7 @@ function del(key, callback) {
 }
 
 module.exports = {
-	returnValue: returnValue,
+	setReturnValue: setReturnValue,
 	"create": create,
 	"restore": restore,
 	"update": update,
