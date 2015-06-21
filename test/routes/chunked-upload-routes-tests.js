@@ -29,9 +29,9 @@ describe("chunked-upload-routes.js", function() {
 			routes.post.handler({
 				body: {
 					fileName: "Testing.txt",
-					fileSize: 1024,
+					fileSize: 2048,
 					chunkSize: 1024,
-					count: 1,
+					count: 2,
 					destination: "Test/destination"
 				}
 			},	{ 
@@ -139,8 +139,26 @@ describe("chunked-upload-routes.js", function() {
 					should.exist(data);
 					should.exist(data.data);
 					data.data.should.be.an.String;
-					data.data.should.equal("Upload Complete");
-					done();
+					data.data.should.equal("Chunk Recieved");
+					routes.put.handler({
+						params: {
+							uploadId: uploadId,
+							index: 1
+						},
+						files: {
+							testFile: {
+								path: "random/path/to/nothing"
+							}
+						}
+					}, {
+						json: function(data) {
+							should.exist(data);
+							should.exist(data.data);
+							data.data.should.be.an.String;
+							data.data.should.equal("Upload Complete");
+							done();
+						}
+					});
 				}
 			});
 		});
