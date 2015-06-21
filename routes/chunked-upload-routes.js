@@ -63,43 +63,45 @@ var routes = {
 		}
 		
 		dataCache.restore(req.params.uploadId, function(error, keyVal) {
-			errorHelper.genericErrorHandler(error, debug);
-			var file = {};
-			var upload = keyVal.value;
-			for (var key in req.files) {
-				if (req.files.hasOwnProperty(key)) {
-					file = req.files[key];
-					break;
+			if(typeHelper.doesExist(keyVal.value)) {
+				console.log(keyVal);
+				errorHelper.genericErrorHandler(error, debug);
+				var file = {};
+				var upload = keyVal.value;
+				for (var key in req.files) {
+					if (req.files.hasOwnProperty(key)) {
+						file = req.files[key];
+						break;
+					}
 				}
-			}
-			
-			function readCallback(error, data) {
-				errorHelper.genericErrorHandler(error, debug);
-				io.WriteFileChunk(upload.TempPath, data, 0, data.length, index * upload.ChunkSize, writeChunkCallback);
-			}
-
-			function writeChunkCallback(error) {
-				errorHelper.genericErrorHandler(error, debug);
-				if (upload.chunks.every(function(val){
-					return val === true;
-				})) 
-				{
-					io.RenameFile(upload.TempPath, upload.FinalPath, renameCallback);
-				} else {
-					res.json(new apiModels.ApiResponse(routePrefix, {}, "Chunk Recieved"));
-				}
-			}
-			
-			function renameCallback(error) {
-				errorHelper.genericErrorHandler(error, debug);
-				dataCache.delete(upload.id, function(error, count) {
+				
+				function readCallback(error, data) {
 					errorHelper.genericErrorHandler(error, debug);
-				});
-
-				res.json(new apiModels.ApiResponse(routePrefix, {}, "Upload Complete"));
-			};
+					io.WriteFileChunk(upload.TempPath, data, 0, data.length, index * upload.ChunkSize, writeChunkCallback);
+				}
+	
+				function writeChunkCallback(error) {
+					errorHelper.genericErrorHandler(error, debug);
+					if (upload.chunks.every(function(val){
+						return val === true;
+					})) 
+					{
+						io.RenameFile(upload.TempPath, upload.FinalPath, renameCallback);
+					} else {
+						res.json(new apiModels.ApiResponse(routePrefix, {}, "Chunk Recieved"));
+					}
+				}
+				
+				function renameCallback(error) {
+					errorHelper.genericErrorHandler(error, debug);
+					dataCache.delete(upload.id, function(error, count) {
+						errorHelper.genericErrorHandler(error, debug);
+					});
+	
+					res.json(new apiModels.ApiResponse(routePrefix, {}, "Upload Complete"));
+				};
 			
-			if(upload) {
+			
 				upload.chunks[index] = true;
 				dataCache.update(upload.Id, upload, defaultTtl, function(error, success) {
 					errorHelper.genericErrorHandler(error, debug);

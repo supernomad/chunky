@@ -205,7 +205,7 @@ describe("chunked-upload-routes.js", function() {
 				routes.put.handler({
 					params: {
 						uploadId: guidHelper.newGuid(),
-						index: "woot"
+						index: 0
 					},
 					files: {
 						testFile: {
