@@ -148,5 +148,56 @@ describe("chunked-upload-routes.js", function() {
 			should.exist(routes.error.handler);
 			routes.error.handler.should.be.a.Function;
 		});
+		
+		it('should handle any custom errors', function(done) {
+			routes.error.handler(errorModels.DownloadMissing(), null, {
+				status: function(status) {
+					should.exist(status);
+					status.should.be.a.Number;
+					status.should.equal(404);
+				},
+				json: function(data) {
+					should.exist(data);
+					data.should.be.a.Object;
+					should.exist(data.Error);
+					should.exist(data.Message);
+					routes.error.handler(errorModels.ValidationError("error"), null, {
+						status: function(status) {
+							should.exist(status);
+							status.should.be.a.Number;
+							status.should.equal(400);
+						},
+						json: function(data) {
+							should.exist(data);
+							data.should.be.a.Object;
+							should.exist(data.Error);
+							should.exist(data.Message);
+							routes.error.handler(errorModels.ServerError(), null, {
+								status: function(status) {
+									should.exist(status);
+									status.should.be.a.Number;
+									status.should.equal(500);
+								},
+								json: function(data) {
+									should.exist(data);
+									data.should.be.a.Object;
+									should.exist(data.Error);
+									should.exist(data.Message);
+									done();
+								}
+							}, function(){ false.should.be.true; });
+						}
+					}, function(){ false.should.be.true; });
+				}
+			}, function(){ false.should.be.true; });
+		});
+		
+		
+		it('should call next if it is not a custom error', function(done) {
+			routes.error.handler(new Error("Generic error"), null, null, function() {
+				true.should.be.true;
+				done();
+			});
+		});
 	});
 });
