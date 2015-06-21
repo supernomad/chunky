@@ -1,5 +1,5 @@
 function doesExist(obj) {
-	return obj != null && obj != undefined && !isNaN(obj);
+	return obj != null && obj != undefined;
 }
 
 function isObject(obj) {
@@ -19,7 +19,7 @@ function isBoolean(obj) {
 }
 
 function isNumber(obj) {
-	return doesExist(obj) && typeof obj === "number";
+	return doesExist(obj) && !isNaN(obj) && typeof obj === "number";
 }
 
 function isType(obj, typ) {
