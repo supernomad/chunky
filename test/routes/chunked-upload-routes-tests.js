@@ -172,7 +172,7 @@ describe("chunked-upload-routes.js", function() {
 				routes.put.handler({
 					params: {
 						uploadId: uploadId,
-						index: ""
+						index: "woot"
 					},
 					files: {
 						testFile: {
