@@ -47,37 +47,43 @@ describe("chunked-upload-routes.js", function() {
 					uploadId = data.data;
 					done();
 				}
+			}, function(error) {
+				should.not.exist(error);
 			});
 		});
 		
-		it('should throw a ServerError if the cache fails to store the upload data', function() {
+		it('should throw a ServerError if the cache fails to store the upload data', function(done) {
 			cache_mock.setReturnValue(false);
-			(function() {
-				routes.post.handler({
-					body: {
-						fileName: "Testing.txt",
-						fileSize: 2048,
-						chunkSize: 1024,
-						count: 2,
-						destination: "Test/destination"
-					}
-				},	{ 
-					json: function(data) {
-					}
-				});
-			}).should.throw(errorModels.GenericError);;
+			routes.post.handler({
+				body: {
+					fileName: "Testing.txt",
+					fileSize: 2048,
+					chunkSize: 1024,
+					count: 2,
+					destination: "Test/destination"
+				}
+			},	{ 
+				json: function(data) {
+				}
+			}, function(error) {
+				should.exist(error);
+				error.should.be.an.instanceOf(errorModels.GenericError);
+				done();
+			});
 		});
 		
-		it('should throw a ValidationError if the request object is considered invalid', function() {
-			(function() {
-				routes.post.handler({
-					body: {					
-					}
-				},	{ 
-					json: function(data) {
-					}
-				});
-			}).should.throw(errorModels.GenericError);;
+		it('should throw a ValidationError if the request object is considered invalid', function(done) {
+			routes.post.handler({
+				body: {					
+				}
+			},	{ 
+				json: function(data) {
+				}
+			}, function(error) {
+				should.exist(error);
+				error.should.be.an.instanceOf(errorModels.GenericError);
+				done();
+			});
 		});
 	});
 	
@@ -104,33 +110,37 @@ describe("chunked-upload-routes.js", function() {
 					data.data.should.be.an.Object;
 					done();
 				}
+			}, function(error) {
+				should.not.exist(error);
 			});
 		});
 		
 		it('should throw a ValidationError if the supplied uploadId is considered invalid', function() {
-			(function() {
-				routes.get.handler({
-					params: {
-						uploadId: "uploadId"
-					}
-				},	{
-					json: function(data) {
-					}
-				});
-			}).should.throw(errorModels.GenericError);;
+			routes.get.handler({
+				params: {
+					uploadId: "uploadId"
+				}
+			},	{
+				json: function(data) {
+				}
+			}, function(error) {
+				should.exist(error);
+				error.should.be.an.instanceOf(errorModels.GenericError);
+			});
 		});
 		
 		it('should throw a UploadMissing error if the supplied uploadId does not exist', function() {
-			(function() {
-				routes.get.handler({
-					params: {
-						uploadId: guidHelper.newGuid()
-					}
-				},	{
-					json: function(data) {
-					}
-				});
-			}).should.throw(errorModels.GenericError);;
+			routes.get.handler({
+				params: {
+					uploadId: guidHelper.newGuid()
+				}
+			},	{
+				json: function(data) {
+				}
+			}, function(error) {
+				should.exist(error);
+				error.should.be.an.instanceOf(errorModels.GenericError);
+			});
 		});
 	});
 	
@@ -147,22 +157,23 @@ describe("chunked-upload-routes.js", function() {
 		
 		it('should throw a ServerError when the specified uploadId does not exist', function() {
 			cache_mock.setReturnValue(false);
-			(function() {
-				routes.put.handler({
-						params: {
-							uploadId: uploadId,
-							index: 0
-						},
-						files: {
-							testFile: {
-								path: "random/path/to/nothing"
-							}
-						}
-					}, {
-						json: function(data) {
-						}
-					});
-			}).should.throw(errorModels.GenericError);
+			routes.put.handler({
+				params: {
+					uploadId: uploadId,
+					index: 0
+				},
+				files: {
+					testFile: {
+						path: "random/path/to/nothing"
+					}
+				}
+			}, {
+				json: function(data) {
+				}
+			}, function(error) {
+				should.exist(error);
+				error.should.be.an.instanceOf(errorModels.GenericError);
+			});
 		});
 		
 		it('should upload a file chunk and associate it with the specified upload', function(done) {
@@ -206,77 +217,81 @@ describe("chunked-upload-routes.js", function() {
 		});
 		
 		it('should throw a ValidationError if the request is considered invalid', function() {
-			(function() {
-				routes.put.handler({
-					params: {
-						uploadId: uploadId,
-						index: 0
-					},
-					files: {
-						
-					}
-				},	{
-					json: function(data) {
-					}
-				});
-			}).should.throw(errorModels.GenericError);;
+			routes.put.handler({
+				params: {
+					uploadId: uploadId,
+					index: 0
+				},
+				files: {
+					
+				}
+			},	{
+				json: function(data) {
+				}
+			}, function(error) {
+				should.exist(error);
+				error.should.be.an.instanceOf(errorModels.GenericError);
+			});
 		});
 		
 		it('should throw a ValidationError if the supplied uploadId is considered invalid', function() {
-			(function() {
-				routes.put.handler({
-					params: {
-						uploadId: "uploadId",
-						index: 0
-					},
-					files: {
-						testFile: {
-							path: "random/path/to/nothing"
-						}
+			routes.put.handler({
+				params: {
+					uploadId: "uploadId",
+					index: 0
+				},
+				files: {
+					testFile: {
+						path: "random/path/to/nothing"
 					}
-				},	{
-					json: function(data) {
-					}
-				});
-			}).should.throw(errorModels.GenericError);;
+				}
+			},	{
+				json: function(data) {
+				}
+			}, function(error) {
+				should.exist(error);
+				error.should.be.an.instanceOf(errorModels.GenericError);
+			});
 		});
 		
 		it('should throw a ValidationError if the supplied index is considered invalid', function() {
-			(function() {
-				routes.put.handler({
-					params: {
-						uploadId: uploadId,
-						index: "woot"
-					},
-					files: {
-						testFile: {
-							path: "random/path/to/nothing"
-						}
+			routes.put.handler({
+				params: {
+					uploadId: uploadId,
+					index: "woot"
+				},
+				files: {
+					testFile: {
+						path: "random/path/to/nothing"
 					}
-				},	{
-					json: function(data) {
-					}
-				});
-			}).should.throw(errorModels.GenericError);;
+				}
+			},	{
+				json: function(data) {
+				}
+			}, function(error) {
+				should.exist(error);
+				error.should.be.an.instanceOf(errorModels.GenericError);
+			});
 		});
 		
 		it('should throw a UploadMissing error if the supplied uploadId does not exist', function() {
-			(function() {
-				routes.put.handler({
-					params: {
-						uploadId: guidHelper.newGuid(),
-						index: 0
-					},
-					files: {
-						testFile: {
-							path: "random/path/to/nothing"
-						}
+			routes.put.handler({
+				params: {
+					uploadId: guidHelper.newGuid(),
+					index: 0
+				},
+				files: {
+					testFile: {
+						path: "random/path/to/nothing"
 					}
-				},	{
-					json: function(data) {
-					}
-				});
-			}).should.throw(errorModels.GenericError);;
+				}
+			},	{
+				json: function(data) {
+				}
+			}, function(error) {
+				should.exist(error);
+				error.should.be.an.instanceOf(errorModels.GenericError);
+			});
 		});
 	});
 	
@@ -304,33 +319,37 @@ describe("chunked-upload-routes.js", function() {
 					data.data.should.equal("Upload: " + uploadId + ", deleted successfuly.");
 					done();
 				}
+			}, function(error) {
+				should.not.exist(error);
 			});
 		});
 		
 		it('should throw a ValidationError if the supplied uploadId is considered invalid', function() {
-			(function() {
-				routes.delete.handler({
-					params: {
-						uploadId: "uploadId"
-					}
-				},	{
-					json: function(data) {
-					}
-				});
-			}).should.throw(errorModels.GenericError);;
+			routes.delete.handler({
+				params: {
+					uploadId: "uploadId"
+				}
+			},	{
+				json: function(data) {
+				}
+			}, function(error) {
+				should.exist(error);
+				error.should.be.an.instanceOf(errorModels.GenericError);
+			});
 		});
 		
 		it('should throw a UploadMissing error if the supplied uploadId does not exist', function() {
-			(function() {
-				routes.delete.handler({
-					params: {
-						uploadId: "uploadId"
-					}
-				},	{
-					json: function(data) {
-					}
-				});
-			}).should.throw(errorModels.GenericError);;
+			routes.delete.handler({
+				params: {
+					uploadId: "uploadId"
+				}
+			},	{
+				json: function(data) {
+				}
+			}, function(error) {
+				should.exist(error);
+				error.should.be.an.instanceOf(errorModels.GenericError);
+			});
 		});
 	});
 	
@@ -386,8 +405,9 @@ describe("chunked-upload-routes.js", function() {
 		});
 		
 		it('should call next if it is not a custom error', function(done) {
-			routes.error.handler(new Error("Generic error"), null, null, function() {
-				true.should.be.true;
+			routes.error.handler(new Error("Generic error"), null, null, function(error) {
+				should.exist(error);
+				error.should.be.an.instanceOf(Error);
 				done();
 			});
 		});
