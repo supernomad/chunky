@@ -1,5 +1,6 @@
 /* global describe, it, afterEach */
-var	should = require('should'),
+var	async = require('async'),
+	should = require('should'),
 	errorModels = require.main.require('libs/models/errorModels'),
 	guidHelper = require.main.require('libs/helpers/guidHelper');
 	
@@ -177,22 +178,35 @@ describe("chunked-upload-routes.js", function() {
 		});
 		
 		it('should upload a file chunk and associate it with the specified upload', function(done) {
-			routes.put.handler({
-				params: {
-					uploadId: uploadId,
-					index: 0
+			async.series ([
+				function(callback) {
+					routes.put.handler({
+						params: {
+							uploadId: uploadId,
+							index: 0
+						},
+						files: {
+							testFile: {
+								path: "random/path/to/nothing"
+							}
+						}
+					}, {
+						json: function(data) {
+							try {
+								should.exist(data);
+								should.exist(data.data);
+								data.data.should.be.an.String;
+								data.data.should.equal("Chunk Recieved");
+								callback(null);
+							} catch(error) {
+								callback(error);
+							}
+						}
+					}, function(error) {
+						should.not.exist(error);
+					});
 				},
-				files: {
-					testFile: {
-						path: "random/path/to/nothing"
-					}
-				}
-			}, {
-				json: function(data) {
-					should.exist(data);
-					should.exist(data.data);
-					data.data.should.be.an.String;
-					data.data.should.equal("Chunk Recieved");
+				function(callback) {
 					routes.put.handler({
 						params: {
 							uploadId: uploadId,
@@ -205,14 +219,21 @@ describe("chunked-upload-routes.js", function() {
 						}
 					}, {
 						json: function(data) {
-							should.exist(data);
-							should.exist(data.data);
-							data.data.should.be.an.String;
-							data.data.should.equal("Upload Complete");
-							done();
+							try {
+								should.exist(data);
+								should.exist(data.data);
+								data.data.should.be.an.String;
+								data.data.should.equal("Upload Complete");
+								callback(null);
+							} catch(error) {
+								callback(error);
+							}
 						}
 					});
 				}
+			], function(error) {
+				should.not.exist(error);
+				done();
 			});
 		});
 		
@@ -362,17 +383,30 @@ describe("chunked-upload-routes.js", function() {
 		});
 		
 		it('should handle any custom errors', function(done) {
-			routes.error.handler(errorModels.UploadMissing(), null, {
-				status: function(status) {
-					should.exist(status);
-					status.should.be.a.Number;
-					status.should.equal(404);
+			async.series([
+				function(callback) {
+					routes.error.handler(errorModels.UploadMissing(), null, {
+						status: function(status) {
+							should.exist(status);
+							status.should.be.a.Number;
+							status.should.equal(404);
+						},
+						json: function(data) {
+							try {
+								should.exist(data);
+								data.should.be.a.Object;
+								should.exist(data.Error);
+								should.exist(data.Message);
+								callback(null);
+							} catch (error) {
+								callback(error);
+							}
+						}
+					}, function() {
+						should.fail();
+					});
 				},
-				json: function(data) {
-					should.exist(data);
-					data.should.be.a.Object;
-					should.exist(data.Error);
-					should.exist(data.Message);
+				function(callback) {
 					routes.error.handler(errorModels.ValidationError("error"), null, {
 						status: function(status) {
 							should.exist(status);
@@ -380,28 +414,46 @@ describe("chunked-upload-routes.js", function() {
 							status.should.equal(400);
 						},
 						json: function(data) {
-							should.exist(data);
-							data.should.be.a.Object;
-							should.exist(data.Error);
-							should.exist(data.Message);
-							routes.error.handler(errorModels.ServerError(), null, {
-								status: function(status) {
-									should.exist(status);
-									status.should.be.a.Number;
-									status.should.equal(500);
-								},
-								json: function(data) {
-									should.exist(data);
-									data.should.be.a.Object;
-									should.exist(data.Error);
-									should.exist(data.Message);
-									done();
-								}
-							}, function(){ false.should.be.true; });
+							try {
+								should.exist(data);
+								data.should.be.a.Object;
+								should.exist(data.Error);
+								should.exist(data.Message);
+								callback(null);
+							} catch(error) {
+								callback(error);
+							}
 						}
-					}, function(){ false.should.be.true; });
+					}, function() {
+						should.fail();
+					});
+				},
+				function(callback) {
+					routes.error.handler(errorModels.ServerError(), null, {
+						status: function(status) {
+							should.exist(status);
+							status.should.be.a.Number;
+							status.should.equal(500);
+						},
+						json: function(data) {
+							try {
+								should.exist(data);
+								data.should.be.a.Object;
+								should.exist(data.Error);
+								should.exist(data.Message);
+								callback(null);
+							} catch(error) {
+								callback(error);
+							}
+						}
+					}, function() {
+						should.fail(); 
+					});
 				}
-			}, function(){ false.should.be.true; });
+			], function(error) {
+				should.not.exist(error);
+				done();
+			});
 		});
 		
 		it('should call next if it is not a custom error', function(done) {
