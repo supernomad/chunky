@@ -12,6 +12,9 @@ describe("chunked-upload-routes.js", function() {
 	
 	afterEach('reset the cache_mock', function() {
 		cache_mock.setReturnValue(true);
+		cache_mock.setReturnErrorOnDelete(false);
+		cache_mock.setReturnErrorOnRestore(false);
+		cache_mock.setReturnErrorOnCreate(false);
 	});
 	
 	it('should return a route object', function() {
@@ -141,6 +144,21 @@ describe("chunked-upload-routes.js", function() {
 			}, function(error) {
 				should.exist(error);
 				error.should.be.an.instanceOf(errorModels.GenericError);
+			});
+		});
+		
+		it('should handle an error thrown by the cache', function() {
+			cache_mock.setReturnErrorOnRestore(true);
+			routes.get.handler({
+				params: {
+					uploadId: guidHelper.newGuid()
+				}
+			},	{
+				json: function(data) {
+				}
+			}, function(error) {
+				should.exist(error);
+				error.should.be.an.instanceOf(Error);
 			});
 		});
 	});
@@ -312,6 +330,48 @@ describe("chunked-upload-routes.js", function() {
 			}, function(error) {
 				should.exist(error);
 				error.should.be.an.instanceOf(errorModels.GenericError);
+			});
+		});
+		
+		it('should handle an error thrown by the cache restoring an upload', function() {
+			cache_mock.setReturnErrorOnRestore(true);
+			routes.put.handler({
+				params: {
+					uploadId: guidHelper.newGuid(),
+					index: 0
+				},
+				files: {
+					testFile: {
+						path: "random/path/to/nothing"
+					}
+				}
+			},	{
+				json: function(data) {
+				}
+			}, function(error) {
+				should.exist(error);
+				error.should.be.an.instanceOf(Error);
+			});
+		});
+		
+		it('should handle an error thrown by the cache updating an upload', function() {
+			cache_mock.setReturnErrorOnCreate(true);
+			routes.put.handler({
+				params: {
+					uploadId: guidHelper.newGuid(),
+					index: 0
+				},
+				files: {
+					testFile: {
+						path: "random/path/to/nothing"
+					}
+				}
+			},	{
+				json: function(data) {
+				}
+			}, function(error) {
+				should.exist(error);
+				error.should.be.an.instanceOf(Error);
 			});
 		});
 	});
