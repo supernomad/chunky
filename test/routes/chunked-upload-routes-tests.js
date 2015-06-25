@@ -174,6 +174,27 @@ describe("chunked-upload-routes.js", function() {
 			routes.put.handler.should.be.a.Function;
 		});
 		
+		it('should handle an error thrown by the cache updating an upload', function() {
+			cache_mock.setReturnErrorOnCreate(true);
+			routes.put.handler({
+				params: {
+					uploadId: uploadId,
+					index: 0
+				},
+				files: {
+					testFile: {
+						path: "random/path/to/nothing"
+					}
+				}
+			},	{
+				json: function(data) {
+				}
+			}, function(error) {
+				should.exist(error);
+				error.should.be.an.instanceOf(Error);
+			});
+		});
+		
 		it('should throw a ServerError when the specified uploadId does not exist', function() {
 			cache_mock.setReturnValue(false);
 			routes.put.handler({
@@ -335,27 +356,6 @@ describe("chunked-upload-routes.js", function() {
 		
 		it('should handle an error thrown by the cache restoring an upload', function() {
 			cache_mock.setReturnErrorOnRestore(true);
-			routes.put.handler({
-				params: {
-					uploadId: guidHelper.newGuid(),
-					index: 0
-				},
-				files: {
-					testFile: {
-						path: "random/path/to/nothing"
-					}
-				}
-			},	{
-				json: function(data) {
-				}
-			}, function(error) {
-				should.exist(error);
-				error.should.be.an.instanceOf(Error);
-			});
-		});
-		
-		it('should handle an error thrown by the cache updating an upload', function() {
-			cache_mock.setReturnErrorOnCreate(true);
 			routes.put.handler({
 				params: {
 					uploadId: guidHelper.newGuid(),

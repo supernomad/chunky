@@ -1,5 +1,6 @@
 /* global Buffer */
-var apiModels = require.main.require('libs/models/apiModels'),
+var async = require('async'),
+	apiModels = require.main.require('libs/models/apiModels'),
 	errorModels = require.main.require('libs/models/errorModels'),
 	guidHelper = require.main.require('libs/helpers/guidHelper'),
 	errorHelper = require.main.require('libs/helpers/errorHelper'),
@@ -15,7 +16,7 @@ var	debug = false,
 	dataCache = null;
 
 var routes = {
-	"get": new apiModels.RouteHandler(routePrefix + "/:downloadId/:index", function (req, res) {
+	"get": new apiModels.RouteHandler(routePrefix + "/:downloadId/:index", function (req, res, next) {
 		var index = parseInt(req.params.index);
 		if (!guidHelper.isGuid(req.params.downloadId)){
 			throw errorModels.ValidationError("The supplied downloadId is not a valid v4 GUID");	
@@ -48,7 +49,7 @@ var routes = {
 			}
 		});
 	}),
-	"post": new apiModels.RouteHandler(routePrefix, function (req, res) {
+	"post": new apiModels.RouteHandler(routePrefix, function (req, res, next) {
 		var valid = validators.validateDownloadRequest(req.body);
 		if(valid !== validators.valid) {
 			throw errorModels.ValidationError(valid);
@@ -68,7 +69,7 @@ var routes = {
 			});
 		});
 	}),
-	"delete": new apiModels.RouteHandler(routePrefix + "/:downloadId", function (req, res) {
+	"delete": new apiModels.RouteHandler(routePrefix + "/:downloadId", function (req, res, next) {
 		if (!guidHelper.isGuid(req.params.downloadId)){
 			throw errorModels.ValidationError("The supplied downloadId is not a valid v4 GUID");	
 		}
