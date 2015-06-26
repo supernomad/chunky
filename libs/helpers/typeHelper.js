@@ -1,5 +1,5 @@
 function doesExist(obj) {
-	return obj != null && obj != undefined;
+	return obj !== null && obj !== undefined;
 }
 
 function isObject(obj) {
