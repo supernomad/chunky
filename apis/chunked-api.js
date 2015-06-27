@@ -12,10 +12,16 @@ var multer = require('multer'),
 	tempChunkPath = __dirname + '/tmp/chunks';
 	
 function configure(cache, options) {
-	if(!typeHelper.isObject(cache)) apiCache = require.main.require('libs/caching/localCache');
-	else apiCache = cache;
+	if(!typeHelper.isObject(cache)) {
+		apiCache = require.main.require('libs/caching/localCache');
+	}
+	else {
+		apiCache = cache;
+	}
 	
-	if(!typeHelper.isObject(options)) options = {};
+	if(!typeHelper.isObject(options)) {
+		options = {};
+	}
 	
 	uploadRoutes = require.main.require('routes/chunked-upload-routes')(apiCache, io, options);
 	downloadRoutes = require.main.require('routes/chunked-download-routes')(apiCache, io, options);

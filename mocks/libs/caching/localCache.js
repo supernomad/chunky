@@ -21,11 +21,11 @@ function setReturnErrorOnDelete(value) {
 
 function create(key, val, ttl, callback) {
 	cache[key] = val;
-	callback(returnErrorOnCreate ? new Error("Random failure") : null, returnValue);
+	callback(returnErrorOnCreate ? new Error('Random failure') : null, returnValue);
 }
 
 function restore(key, callback) {
-	callback(returnErrorOnRestore ? new Error("Random failure") : null, {key: key, value: cache[key]});
+	callback(returnErrorOnRestore ? new Error('Random failure') : null, {key: key, value: cache[key]});
 }
 
 function update(key, val, ttl, callback) {
@@ -34,7 +34,7 @@ function update(key, val, ttl, callback) {
 
 function del(key, callback) {
 	delete cache[key];
-	callback(returnErrorOnDelete ? new Error("Random failure") : null, 1);
+	callback(returnErrorOnDelete ? new Error('Random failure') : null, 1);
 }
 
 module.exports = {
@@ -42,8 +42,8 @@ module.exports = {
 	setReturnErrorOnRestore: setReturnErrorOnRestore,
 	setReturnErrorOnCreate: setReturnErrorOnCreate,
 	setReturnErrorOnDelete: setReturnErrorOnDelete,
-	"create": create,
-	"restore": restore,
-	"update": update,
-	"delete": del
+	'create': create,
+	'restore': restore,
+	'update': update,
+	'delete': del
 };

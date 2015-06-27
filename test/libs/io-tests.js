@@ -1,8 +1,8 @@
 /* global describe, it , Buffer */
 var should = require('should'),
 	io = require.main.require('libs/io'),
-	tempFile = "./tmp/tests/tmp.temp",
-	renameFile = "./tmp/tests/temp-rename.temp";
+	tempFile = './tmp/tests/tmp.temp',
+	renameFile = './tmp/tests/temp-rename.temp';
 
 describe('io.js', function() {
 	describe('#CreateFile', function() {

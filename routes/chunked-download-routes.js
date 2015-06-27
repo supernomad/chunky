@@ -9,19 +9,19 @@ var async = require('async'),
 	validators = require.main.require('libs/validators/chunked-download-validators');
 	
 var	debug = false,
-	routePrefix = "/chunked/download",
+	routePrefix = '/chunked/download',
 	defaultTtl = 3600,
 	chunkSize = 1024,
 	io = null,
 	dataCache = null;
 
 var routes = {
-	"get": new apiModels.RouteHandler(routePrefix + "/:downloadId/:index", function (req, res, next) {
+	'get': new apiModels.RouteHandler(routePrefix + '/:downloadId/:index', function (req, res, next) {
 		var index = parseInt(req.params.index);
 		if (!guidHelper.isGuid(req.params.downloadId)){
-			next(errorModels.ValidationError("The supplied downloadId is not a valid v4 GUID"));	
+			next(errorModels.ValidationError('The supplied downloadId is not a valid v4 GUID'));	
 		} else if (!typeHelper.isNumber(index)) {
-			next(errorModels.ValidationError("The supplied index is not a valid number"));
+			next(errorModels.ValidationError('The supplied index is not a valid number'));
 		}
 		async.waterfall([
 			function(callback) {
@@ -59,7 +59,7 @@ var routes = {
 			}
 		});
 	}),
-	"post": new apiModels.RouteHandler(routePrefix, function (req, res, next) {
+	'post': new apiModels.RouteHandler(routePrefix, function (req, res, next) {
 		var valid = validators.validateDownloadRequest(req.body);
 		if(valid !== validators.valid) {
 			throw errorModels.ValidationError(valid);
@@ -79,9 +79,9 @@ var routes = {
 			});
 		});
 	}),
-	"delete": new apiModels.RouteHandler(routePrefix + "/:downloadId", function (req, res, next) {
+	'delete': new apiModels.RouteHandler(routePrefix + '/:downloadId', function (req, res, next) {
 		if (!guidHelper.isGuid(req.params.downloadId)){
-			throw errorModels.ValidationError("The supplied downloadId is not a valid v4 GUID");	
+			throw errorModels.ValidationError('The supplied downloadId is not a valid v4 GUID');	
 		}
 		
 		dataCache.restore(req.params.downloadId, function(error, download) {
@@ -89,11 +89,11 @@ var routes = {
 
 			dataCache.delete(download.id, function (error, count) {
 				errorHelper.genericErrorHandler(error);
-				res.json(new apiModels.ApiResponse(routePrefix, {}, "Download: " + req.params.downloadId + ", deleted successfuly."));
+				res.json(new apiModels.ApiResponse(routePrefix, {}, 'Download: ' + req.params.downloadId + ', deleted successfuly.'));
 			});
 		});
 	}),
-	"error": new apiModels.ErrorHandler(function (error, req, res, next) {
+	'error': new apiModels.ErrorHandler(function (error, req, res, next) {
 		if(error instanceof errorModels.GenericError) {
 			res.status(error.Code);
 			res.json({

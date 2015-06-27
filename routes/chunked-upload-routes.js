@@ -9,15 +9,15 @@ var async = require('async'),
 	validators = require.main.require('libs/validators/chunked-upload-validators');
 	
 var	debug = false,
-	routePrefix = "/chunked/upload",
+	routePrefix = '/chunked/upload',
 	defaultTtl = 3600,
 	io = null,
 	dataCache = null;
 
 var routes = {
-	"get": new apiModels.RouteHandler(routePrefix + "/:uploadId", function (req, res, next) {
+	'get': new apiModels.RouteHandler(routePrefix + '/:uploadId', function (req, res, next) {
 		if (!guidHelper.isGuid(req.params.uploadId)) {
-			next(errorModels.ValidationError("The supplied uploadId is not a valid v4 GUID"));	
+			next(errorModels.ValidationError('The supplied uploadId is not a valid v4 GUID'));	
 		} else {
 			dataCache.restore(req.params.uploadId, function name(error, upload) {
 				if(typeHelper.doesExist(error)) {
@@ -30,7 +30,7 @@ var routes = {
 			});
 		}
 	}),
-	"post": new apiModels.RouteHandler(routePrefix, function (req, res, next) {
+	'post': new apiModels.RouteHandler(routePrefix, function (req, res, next) {
 		var validity = validators.validateUploadRequest(req.body);
 		if(validity !== validators.valid) {
 			next(errorModels.ValidationError(validity));
@@ -62,15 +62,15 @@ var routes = {
 			});
 		}
 	}),
-	"put": new apiModels.RouteHandler(routePrefix + "/:uploadId/:index", function (req, res, next) {
+	'put': new apiModels.RouteHandler(routePrefix + '/:uploadId/:index', function (req, res, next) {
 		var validity = validators.validateChunkRequest(req);
 		var index = parseInt(req.params.index);
 		if(validity !== validators.valid) {
 			next(errorModels.ValidationError(validity));
 		} else if (!guidHelper.isGuid(req.params.uploadId)){
-			next(errorModels.ValidationError("The supplied uploadId is not a valid v4 GUID"));	
+			next(errorModels.ValidationError('The supplied uploadId is not a valid v4 GUID'));	
 		} else if (!typeHelper.isNumber(index)) {
-			next(errorModels.ValidationError("The supplied index is not a valid number"));
+			next(errorModels.ValidationError('The supplied index is not a valid number'));
 		} else {
 			var file = {};
 			for (var key in req.files) {
@@ -143,16 +143,16 @@ var routes = {
 			], function(error, upload, complete) {
 				if(typeHelper.doesExist(error)) next(error);
 				else if(complete) {
-					res.json(new apiModels.ApiResponse(routePrefix, {}, "Upload Complete"));
+					res.json(new apiModels.ApiResponse(routePrefix, {}, 'Upload Complete'));
 				} else {
-					res.json(new apiModels.ApiResponse(routePrefix, {}, "Chunk Recieved"));
+					res.json(new apiModels.ApiResponse(routePrefix, {}, 'Chunk Recieved'));
 				}
 			});
 		}
 	}),
-	"delete": new apiModels.RouteHandler(routePrefix + "/:uploadId", function (req, res, next) {
+	'delete': new apiModels.RouteHandler(routePrefix + '/:uploadId', function (req, res, next) {
 		if (!guidHelper.isGuid(req.params.uploadId)){
-			next(errorModels.ValidationError("The supplied uploadId is not a valid v4 GUID"));	
+			next(errorModels.ValidationError('The supplied uploadId is not a valid v4 GUID'));	
 		} else {
 			async.waterfall([
 				function(callback) {
@@ -172,11 +172,11 @@ var routes = {
 				}
 			], function(error) {
 				if(typeHelper.doesExist(error)) next(error);
-				res.json(new apiModels.ApiResponse(routePrefix, {}, "Upload: " + req.params.uploadId + ", deleted successfuly."));
+				res.json(new apiModels.ApiResponse(routePrefix, {}, 'Upload: ' + req.params.uploadId + ', deleted successfuly.'));
 			});
 		}
 	}),
-	"error": new apiModels.ErrorHandler(function (error, req, res, next) {
+	'error': new apiModels.ErrorHandler(function (error, req, res, next) {
 		if(error instanceof errorModels.GenericError) {
 			res.status(error.Code);
 			res.json({

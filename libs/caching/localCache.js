@@ -38,8 +38,8 @@ function del(key, callback) {
 }
 
 module.exports = {
-	"create": create,
-	"restore": restore,
-	"update": update,
-	"delete": del
+	'create': create,
+	'restore': restore,
+	'update': update,
+	'delete': del
 };

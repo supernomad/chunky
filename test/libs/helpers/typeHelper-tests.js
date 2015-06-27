@@ -19,7 +19,7 @@ describe('typeHelper', function(){
 		should.exist(test);
 		test.should.be.true;
 		
-		test = typeHelper.doesExist("");
+		test = typeHelper.doesExist('');
 		should.exist(test);
 		test.should.be.true;
 		
@@ -43,7 +43,7 @@ describe('typeHelper', function(){
   
   describe('#isObject', function() {
 	 it('should return false when the value is not an object', function () {
-		var test = typeHelper.isObject("");
+		var test = typeHelper.isObject('');
 		should.exist(test);
 		test.should.be.false;
 		
@@ -69,7 +69,7 @@ describe('typeHelper', function(){
   
     describe('#isFunction', function() {
 	 it('should return false when the value is not a function', function () {
-		var test = typeHelper.isFunction("");
+		var test = typeHelper.isFunction('');
 		should.exist(test);
 		test.should.be.false;
 		
@@ -113,7 +113,7 @@ describe('typeHelper', function(){
 	 });
 	 
 	 it('should return true when the value is a string', function() {
-		var test = typeHelper.isString("");
+		var test = typeHelper.isString('');
 		should.exist(test);
 		test.should.be.true;
 	 });
@@ -133,7 +133,7 @@ describe('typeHelper', function(){
 		should.exist(test);
 		test.should.be.false;
 		
-		test = typeHelper.isBoolean("");
+		test = typeHelper.isBoolean('');
 		should.exist(test);
 		test.should.be.false;
 	 });
@@ -159,7 +159,7 @@ describe('typeHelper', function(){
 		should.exist(test);
 		test.should.be.false;
 		
-		test = typeHelper.isNumber("");
+		test = typeHelper.isNumber('');
 		should.exist(test);
 		test.should.be.false;
 	 });

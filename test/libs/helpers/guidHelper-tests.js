@@ -38,7 +38,7 @@ describe('guidHelper.js', function() {
 		});
 		
 		it('should return false for anything other than a valid string v4 GUID', function() {
-			guidHelper.isGuid("").should.be.false;
+			guidHelper.isGuid('').should.be.false;
 			guidHelper.isGuid({}).should.be.false;
 			guidHelper.isGuid(null).should.be.false;
 			guidHelper.isGuid(undefined).should.be.false;

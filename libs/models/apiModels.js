@@ -17,12 +17,12 @@ function apiResponse(api, meta, data) {
 
 function upload(request) {
 	var self = this;
-    self.id = "";
+    self.id = '';
 	self.fileName = request.fileName;
 	self.fileSize = request.fileSize;
 	self.destination = request.destination;
-	self.tempPath = "";
-	self.finalPath = "";
+	self.tempPath = '';
+	self.finalPath = '';
 	self.chunkSize = request.chunkSize;
 	self.count = request.count;
 	self.chunks = [];
@@ -39,7 +39,7 @@ function upload(request) {
 
 function download(request, size, chunkSize) {
 	var self = this;
-	self.id = "";
+	self.id = '';
 	self.path = request.path;
 	self.fileSize = size; 
 	self.chunkSize = chunkSize;

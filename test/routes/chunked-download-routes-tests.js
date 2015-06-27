@@ -3,10 +3,10 @@ var	should = require('should'),
 	errorModels = require.main.require('libs/models/errorModels'),
 	guidHelper = require.main.require('libs/helpers/guidHelper');
 	
-describe("chunked-upload-routes.js", function() {
+describe('chunked-upload-routes.js', function() {
 	var io_mock = require.main.require('mocks/libs/io'),
 		cache_mock = require.main.require('mocks/libs/caching/localCache'),
-		routes = require.main.require('routes/chunked-download-routes')(cache_mock, io_mock, {debug:true, routePrefix:"/chunked/download", chunkSize: 1024}),
+		routes = require.main.require('routes/chunked-download-routes')(cache_mock, io_mock, {debug:true, routePrefix:'/chunked/download', chunkSize: 1024}),
 		downloadId = null;
 	
 	afterEach('reset the cache_mock', function() {
@@ -18,7 +18,7 @@ describe("chunked-upload-routes.js", function() {
 		routes.should.be.a.Object;
 	});
 	
-	describe("#POST", function() {
+	describe('#POST', function() {
 		it('should have a uri and handler', function() {
 			should.exist(routes.post);
 			
@@ -32,7 +32,7 @@ describe("chunked-upload-routes.js", function() {
 		it('should create a new download if the request object is considered valid', function(done) {
 			routes.post.handler({
 				body: {
-					path: "/i/am/a/path/to/a/destination"
+					path: '/i/am/a/path/to/a/destination'
 				}
 			},	{ 
 				json: function(data) {
@@ -53,7 +53,7 @@ describe("chunked-upload-routes.js", function() {
 			(function() {
 				routes.post.handler({
 					body: {
-						path: "/i/am/a/path/to/a/destination"
+						path: '/i/am/a/path/to/a/destination'
 					}
 				},	{ 
 					json: function(data) {
@@ -75,7 +75,7 @@ describe("chunked-upload-routes.js", function() {
 		});
 	});
 	
-	describe("#GET", function() {
+	describe('#GET', function() {
 		it('should have a uri and handler', function() {
 			should.exist(routes.get);
 			
@@ -134,7 +134,7 @@ describe("chunked-upload-routes.js", function() {
 			(function() {
 				routes.get.handler({
 					params: {
-						downloadId: "downloadId",
+						downloadId: 'downloadId',
 						index: 0
 					}
 				}, {
@@ -149,7 +149,7 @@ describe("chunked-upload-routes.js", function() {
 				routes.get.handler({
 					params: {
 						downloadId: downloadId,
-						index: ""
+						index: ''
 					}
 				}, {
 					send: function(buffer) {
@@ -159,7 +159,7 @@ describe("chunked-upload-routes.js", function() {
 		});
 	});
 	
-	describe("#DELETE", function() {
+	describe('#DELETE', function() {
 		it('should have a uri and handler', function() {
 			should.exist(routes.delete);
 			
@@ -180,7 +180,7 @@ describe("chunked-upload-routes.js", function() {
 					should.exist(data);
 					should.exist(data.data);
 					data.data.should.be.an.String;
-					data.data.should.equal("Download: " + downloadId + ", deleted successfuly.");
+					data.data.should.equal('Download: ' + downloadId + ', deleted successfuly.');
 					done();
 				}
 			});
@@ -190,7 +190,7 @@ describe("chunked-upload-routes.js", function() {
 			(function() {
 				routes.delete.handler({
 					params: {
-						downloadId: "downloadId"
+						downloadId: 'downloadId'
 					}
 				},	{
 					json: function(data) {
@@ -203,7 +203,7 @@ describe("chunked-upload-routes.js", function() {
 			(function() {
 				routes.delete.handler({
 					params: {
-						downloadId: "downloadId"
+						downloadId: 'downloadId'
 					}
 				},	{
 					json: function(data) {
@@ -213,7 +213,7 @@ describe("chunked-upload-routes.js", function() {
 		});
 	});
 	
-	describe("#ERROR", function() {
+	describe('#ERROR', function() {
 		it('should have a handler', function() {
 			should.exist(routes.error);
 			
@@ -233,7 +233,7 @@ describe("chunked-upload-routes.js", function() {
 					data.should.be.a.Object;
 					should.exist(data.Error);
 					should.exist(data.Message);
-					routes.error.handler(errorModels.ValidationError("error"), null, {
+					routes.error.handler(errorModels.ValidationError('error'), null, {
 						status: function(status) {
 							should.exist(status);
 							status.should.be.a.Number;
@@ -266,7 +266,7 @@ describe("chunked-upload-routes.js", function() {
 		
 		
 		it('should call next if it is not a custom error', function(done) {
-			routes.error.handler(new Error("Generic error"), null, null, function() {
+			routes.error.handler(new Error('Generic error'), null, null, function() {
 				true.should.be.true;
 				done();
 			});
