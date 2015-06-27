@@ -19,11 +19,21 @@ var routes = {
 	"get": new apiModels.RouteHandler(routePrefix + "/:downloadId/:index", function (req, res, next) {
 		var index = parseInt(req.params.index);
 		if (!guidHelper.isGuid(req.params.downloadId)){
-			throw errorModels.ValidationError("The supplied downloadId is not a valid v4 GUID");	
+			next(errorModels.ValidationError("The supplied downloadId is not a valid v4 GUID"));	
 		} else if (!typeHelper.isNumber(index)) {
-			throw errorModels.ValidationError("The supplied index is not a valid number");
+			next(errorModels.ValidationError("The supplied index is not a valid number"));
 		}
-		
+		async.waterfall([
+			function(callback) {
+				dataCache.restore(req.params.downloadId, function(error, download) {
+					if(typeHelper.doesExist()) {
+						
+					}
+				});
+			}
+		], function(error, result) {
+			
+		});
 		dataCache.restore(req.params.downloadId, function(error, keyVal) {
 			errorHelper.genericErrorHandler(error);
 			if(typeHelper.doesExist(keyVal.value)) {

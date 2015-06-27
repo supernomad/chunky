@@ -33,7 +33,9 @@ describe('localCache.js', function () {
 				should.exist(keyVal);
 				keyVal.key.should.equal(key);
 				for (var hashKey in keyVal.value) {
-					keyVal.value[hashKey].should.equal(object[hashKey]);
+					if(keyVal.value.hasOwnProperty(hashKey)) {
+						keyVal.value[hashKey].should.equal(object[hashKey]);
+					}
 				}
 				done();
 			});
@@ -48,7 +50,9 @@ describe('localCache.js', function () {
 			test.key.should.equal(key);
 			
 			for (var hashKey in test.value) {
-				test.value[hashKey].should.equal(object[hashKey]);
+				if(test.value.hasOwnProperty(hashKey)) {
+					test.value[hashKey].should.equal(object[hashKey]);
+				}
 			}
 		});
 	});
@@ -66,7 +70,9 @@ describe('localCache.js', function () {
 					should.exist(keyVal);
 					keyVal.key.should.equal(key);
 					for (var hashKey in keyVal.value) {
-						keyVal.value[hashKey].should.equal(object[hashKey]);
+						if(keyVal.value.hasOwnProperty(hashKey)) {
+							keyVal.value[hashKey].should.equal(object[hashKey]);
+						}
 					}
 					done();
 				});
@@ -86,7 +92,9 @@ describe('localCache.js', function () {
 			test.key.should.equal(key);
 			
 			for (var hashKey in test.value) {
-				test.value[hashKey].should.equal(object[hashKey]);
+				if(test.value.hasOwnProperty(hashKey)) {
+					test.value[hashKey].should.equal(object[hashKey]);
+				}
 			}
 		});
 	});
