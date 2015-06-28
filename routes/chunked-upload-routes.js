@@ -10,6 +10,7 @@ var async = require('async'),
 var	debug = false,
 	routePrefix = '/chunked/upload',
 	defaultTtl = 3600,
+	maxSize = 1024 * 1024 * 1024 * 2,
 	io = null,
 	dataCache = null;
 
@@ -30,7 +31,7 @@ var routes = {
 		}
 	}),
 	'post': new apiModels.RouteHandler(routePrefix, function (req, res, next) {
-		var validity = validators.validateUploadRequest(req.body);
+		var validity = validators.validateUploadRequest(req.body, maxSize);
 		if(validity !== validators.valid) {
 			next(errorModels.ValidationError(validity));
 		} else {
