@@ -25,8 +25,9 @@ describe('guidHelper.js', function() {
 			for (var index = 0; index < iterations; index++) {
 				var guid = guidHelper.newGuid();
 				guids.push(guid);
-				if(index > 0)
+				if(index > 0) {
 					contains(guid, guids).should.be.false;
+				}
 			}
 		});
 	});
