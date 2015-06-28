@@ -22,7 +22,7 @@ describe('io.js', function() {
 					done();
 				});
 			});
-			fullyBuffered.should.be.a.Boolean;
+			fullyBuffered.should.be.a.Boolean();
 		});
 	});
 	
@@ -42,7 +42,7 @@ describe('io.js', function() {
 					done();
 				});
 			});
-			fullyBuffered.should.be.a.Boolean;
+			fullyBuffered.should.be.a.Boolean();
 		});
 	});
 	

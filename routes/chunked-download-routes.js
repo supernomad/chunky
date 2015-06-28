@@ -3,7 +3,6 @@ var async = require('async'),
 	apiModels = require.main.require('libs/models/apiModels'),
 	errorModels = require.main.require('libs/models/errorModels'),
 	guidHelper = require.main.require('libs/helpers/guidHelper'),
-	errorHelper = require.main.require('libs/helpers/errorHelper'),
 	typeHelper = require.main.require('libs/helpers/typeHelper'),
 	stringHelper = require.main.require('libs/helpers/stringHelper'),
 	validators = require.main.require('libs/validators/chunked-download-validators');
@@ -110,11 +109,11 @@ var routes = {
 					});
 				},
 				function(download, callback) {
-					dataCache.delete(download.id, function(error, count) {
+					dataCache.delete(download.id, function(error) {
 						callback(error, download);
 					});
 				}
-			], function(error, result) {
+			], function(error) {
 				if(typeHelper.doesExist(error)) {
 					next(error);
 				} else {

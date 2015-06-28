@@ -47,7 +47,7 @@ describe('chunked-upload-routes.js', function() {
 					should.exist(data);
 					should.exist(data.data);
 					data.data.should.be.a.String();
-					/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[8,9,a,b][0-9a-f]{3}-[0-9a-f]{12}$/ig.test(data.data).should.be.true;
+					/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[8,9,a,b][0-9a-f]{3}-[0-9a-f]{12}$/ig.test(data.data).should.be.true();
 					uploadId = data.data;
 					done();
 				}
@@ -67,7 +67,7 @@ describe('chunked-upload-routes.js', function() {
 					destination: 'Test/destination'
 				}
 			},	{ 
-				json: function(data) {
+				json: function() {
 				}
 			}, function(error) {
 				should.exist(error);
@@ -81,7 +81,7 @@ describe('chunked-upload-routes.js', function() {
 				body: {					
 				}
 			},	{ 
-				json: function(data) {
+				json: function() {
 				}
 			}, function(error) {
 				should.exist(error);
@@ -125,7 +125,7 @@ describe('chunked-upload-routes.js', function() {
 					uploadId: 'uploadId'
 				}
 			},	{
-				json: function(data) {
+				json: function() {
 				}
 			}, function(error) {
 				should.exist(error);
@@ -139,7 +139,7 @@ describe('chunked-upload-routes.js', function() {
 					uploadId: guidHelper.newGuid()
 				}
 			},	{
-				json: function(data) {
+				json: function() {
 				}
 			}, function(error) {
 				should.exist(error);
@@ -154,7 +154,7 @@ describe('chunked-upload-routes.js', function() {
 					uploadId: guidHelper.newGuid()
 				}
 			},	{
-				json: function(data) {
+				json: function() {
 				}
 			}, function(error) {
 				should.exist(error);
@@ -187,7 +187,7 @@ describe('chunked-upload-routes.js', function() {
 					}
 				}
 			},	{
-				json: function(data) {
+				json: function() {
 				}
 			}, function(error) {
 				should.exist(error);
@@ -208,7 +208,7 @@ describe('chunked-upload-routes.js', function() {
 					}
 				}
 			}, {
-				json: function(data) {
+				json: function() {
 				}
 			}, function(error) {
 				should.exist(error);
@@ -286,7 +286,7 @@ describe('chunked-upload-routes.js', function() {
 					
 				}
 			},	{
-				json: function(data) {
+				json: function() {
 				}
 			}, function(error) {
 				should.exist(error);
@@ -306,7 +306,7 @@ describe('chunked-upload-routes.js', function() {
 					}
 				}
 			},	{
-				json: function(data) {
+				json: function() {
 				}
 			}, function(error) {
 				should.exist(error);
@@ -326,7 +326,7 @@ describe('chunked-upload-routes.js', function() {
 					}
 				}
 			},	{
-				json: function(data) {
+				json: function() {
 				}
 			}, function(error) {
 				should.exist(error);
@@ -346,7 +346,7 @@ describe('chunked-upload-routes.js', function() {
 					}
 				}
 			},	{
-				json: function(data) {
+				json: function() {
 				}
 			}, function(error) {
 				should.exist(error);
@@ -367,7 +367,7 @@ describe('chunked-upload-routes.js', function() {
 					}
 				}
 			},	{
-				json: function(data) {
+				json: function() {
 				}
 			}, function(error) {
 				should.exist(error);
@@ -411,7 +411,7 @@ describe('chunked-upload-routes.js', function() {
 					uploadId: 'uploadId'
 				}
 			},	{
-				json: function(data) {
+				json: function() {
 				}
 			}, function(error) {
 				should.exist(error);
@@ -425,7 +425,7 @@ describe('chunked-upload-routes.js', function() {
 					uploadId: 'uploadId'
 				}
 			},	{
-				json: function(data) {
+				json: function() {
 				}
 			}, function(error) {
 				should.exist(error);

@@ -1,5 +1,4 @@
-var	typeHelper = require.main.require('libs/helpers/typeHelper'),
-	cache = {},
+var	cache = {},
 	returnValue = true,
 	returnErrorOnDelete = false,
 	returnErrorOnCreate = false,

@@ -1,6 +1,4 @@
 /* global Buffer */
-var fs = require('fs');
-
 function getFileStats(path, callback) {
 	callback(null, {
 		size: 1024

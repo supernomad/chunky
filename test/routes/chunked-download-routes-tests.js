@@ -40,8 +40,8 @@ describe('chunked-download-routes.js', function() {
 					should.exist(data);
 					should.exist(data.data);
 					data.data.should.be.a.Object();
-					data.data.count.should.be.a.Number;
-					data.data.chunkSize.should.be.a.Number;
+					data.data.count.should.be.a.Number();
+					data.data.chunkSize.should.be.a.Number();
 					/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[8,9,a,b][0-9a-f]{3}-[0-9a-f]{12}$/ig.test(data.data.id).should.be.true();
 					downloadId = data.data.id;
 					done();
@@ -259,7 +259,7 @@ describe('chunked-download-routes.js', function() {
 					routes.error.handler(errorModels.ServerError(), null, {
 						status: function(status) {
 							should.exist(status);
-							status.should.be.a.Number;
+							status.should.be.a.Number();
 							status.should.equal(500);
 						},
 						json: function(data) {
@@ -277,7 +277,7 @@ describe('chunked-download-routes.js', function() {
 					routes.error.handler(errorModels.ValidationError('error'), null, {
 						status: function(status) {
 							should.exist(status);
-							status.should.be.a.Number;
+							status.should.be.a.Number();
 							status.should.equal(400);
 						},
 						json: function(data) {
@@ -295,7 +295,7 @@ describe('chunked-download-routes.js', function() {
 					routes.error.handler(errorModels.DownloadMissing(), null, {
 						status: function(status) {
 							should.exist(status);
-							status.should.be.a.Number;
+							status.should.be.a.Number();
 							status.should.equal(404);
 						},
 						json: function(data) {
@@ -309,7 +309,7 @@ describe('chunked-download-routes.js', function() {
 						should.fail(); 
 					});
 				}
-			], function(error) {
+			], function() {
 				done();
 			});
 		});
@@ -318,7 +318,7 @@ describe('chunked-download-routes.js', function() {
 		it('should call next if it is not a custom error', function(done) {
 			routes.error.handler(new Error('Generic error'), null, null, function(error) {
 				should.exist(error);
-				error.should.be.an.Error;
+				error.should.be.an.Error();
 				done();
 			});
 		});

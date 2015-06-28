@@ -3,7 +3,6 @@ var async = require('async'),
 	apiModels = require.main.require('libs/models/apiModels'),
 	errorModels = require.main.require('libs/models/errorModels'),
 	guidHelper = require.main.require('libs/helpers/guidHelper'),
-	errorHelper = require.main.require('libs/helpers/errorHelper'),
 	typeHelper = require.main.require('libs/helpers/typeHelper'),
 	stringHelper = require.main.require('libs/helpers/stringHelper'),
 	validators = require.main.require('libs/validators/chunked-upload-validators');
@@ -132,7 +131,7 @@ var routes = {
 								});
 							},
 							function(call) {
-								dataCache.delete(upload.id, function(error, count) {
+								dataCache.delete(upload.id, function(error) {
 									call(error);
 								});
 							}
@@ -166,7 +165,7 @@ var routes = {
 					});
 				},
 				function(upload, callback) {
-					dataCache.delete(upload.id, function (error, count) {
+					dataCache.delete(upload.id, function (error) {
 						callback(error, upload);
 					});
 				},
