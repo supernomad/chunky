@@ -34,7 +34,7 @@ module.exports = function(grunt) {
                 token: "67fda9f7292a4d1ab17273d23077abd4"
             },
             coverage: {
-                
+                src: 'coverage/lcov.info'
             }
         }
     });
