@@ -1,11 +1,17 @@
 /* global Buffer */
+var returnErrorOnGetFileStats = false;
+
+function setReturnErrorOnGetFileStats(value) {
+	returnErrorOnGetFileStats = value;
+}
+
 function getFileStats(path, callback) {
 	if(path.indexOf('chunksize') !== -1) {
-		callback(null, {
+		callback(returnErrorOnGetFileStats ? new Error('RandomError') : null, {
 			size: 1025
 		});
 	} else {
-		callback(null, {
+		callback(returnErrorOnGetFileStats ? new Error('RandomError') : null, {
 			size: 1024
 		});
 	}
@@ -36,6 +42,7 @@ function readFileChunk(path, buffer, offset, length, position, callback) {
 }
 
 module.exports = {
+	setReturnErrorOnGetFileStats: setReturnErrorOnGetFileStats,
 	GetFileStats: getFileStats,
 	CreateFile: createFile,
 	WriteFileChunk: writeFileChunk,

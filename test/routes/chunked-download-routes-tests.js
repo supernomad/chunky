@@ -12,6 +12,8 @@ describe('chunked-download-routes.js', function() {
 	
 	afterEach('reset the cache_mock', function() {
 		cache_mock.setReturnValue(true);
+		cache_mock.setReturnErrorOnRestore(false);
+		io_mock.setReturnErrorOnGetFileStats(false);
 	});
 	
 	it('should return a route object', function() {
@@ -89,6 +91,23 @@ describe('chunked-download-routes.js', function() {
 			});
 		});
 		
+		it('should throw a ServerError if the file stats cannot be found', function(done) {
+			io_mock.setReturnErrorOnGetFileStats(true);
+			routes.post.handler({
+				body: {
+					path: '/i/am/a/path/to/a/destination'
+				}
+			},	{ 
+				json: function() {
+					should.fail();
+				}
+			}, function(error) {
+				should.exist(error);
+				error.should.be.an.Error();
+				done();
+			});
+		});
+		
 		it('should throw a ValidationError if the request object is considered invalid', function(done) {
 			routes.post.handler({
 				body: {					
@@ -147,6 +166,24 @@ describe('chunked-download-routes.js', function() {
 			}, function(error) {
 				should.exist(error);
 				error.should.be.an.instanceOf(errorModels.GenericError);
+				done();
+			});
+		});
+		
+		it('should throw a ServerError if the cache fails to retrieve the download data', function(done) {
+			cache_mock.setReturnErrorOnRestore(true);
+			routes.get.handler({
+				params: {
+					downloadId: downloadId,
+					index: 0
+				}
+			}, {
+				send: function() {
+					should.fail();
+				}
+			}, function(error) {
+				should.exist(error);
+				error.should.be.an.Error();
 				done();
 			});
 		});
@@ -215,6 +252,23 @@ describe('chunked-download-routes.js', function() {
 			routes.delete.handler.should.be.a.Function();
 		});
 		
+		it('should throw a ServerError if the cache fails to restore the download data', function(done) {
+			cache_mock.setReturnErrorOnRestore(true);
+			routes.delete.handler({
+				params: {
+					downloadId: downloadId
+				}
+			},	{
+				json: function() {
+					should.fail();
+				}
+			}, function(error) {
+				should.exist(error);
+				error.should.be.an.Error();
+				done();
+			});
+		});
+		
 		it('should remove the specified download from the cache', function(done) {
 			routes.delete.handler({
 				params: {
@@ -252,7 +306,7 @@ describe('chunked-download-routes.js', function() {
 		it('should throw a UploadMissing error if the supplied downloadId does not exist', function(done) {
 			routes.delete.handler({
 				params: {
-					downloadId: 'downloadId'
+					downloadId: guidHelper.newGuid()
 				}
 			},	{
 				json: function() {
