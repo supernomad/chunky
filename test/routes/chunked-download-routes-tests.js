@@ -51,6 +51,27 @@ describe('chunked-download-routes.js', function() {
 			});
 		});
 		
+		it('should create a new download if the request object is considered valid', function(done) {
+			routes.post.handler({
+				body: {
+					path: '/i/am/a/path/to/a/chunksize'
+				}
+			},	{ 
+				json: function(data) {
+					should.exist(data);
+					should.exist(data.data);
+					data.data.should.be.a.Object();
+					data.data.count.should.be.a.Number();
+					data.data.chunkSize.should.be.a.Number();
+					/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[8,9,a,b][0-9a-f]{3}-[0-9a-f]{12}$/ig.test(data.data.id).should.be.true();
+					downloadId = data.data.id;
+					done();
+				}
+			}, function() {
+				should.fail();
+			});
+		});
+		
 		it('should throw a ServerError if the cache fails to store the download data', function(done) {
 			cache_mock.setReturnValue(false);
 			routes.post.handler({

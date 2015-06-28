@@ -1,8 +1,14 @@
 /* global Buffer */
 function getFileStats(path, callback) {
-	callback(null, {
-		size: 1024
-	});
+	if(path.indexOf('chunksize') !== -1) {
+		callback(null, {
+			size: 1025
+		});
+	} else {
+		callback(null, {
+			size: 1024
+		});
+	}
 }
 
 function createFile(path, buffer, offset, length, callback) {

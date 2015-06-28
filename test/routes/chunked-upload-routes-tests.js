@@ -405,31 +405,52 @@ describe('chunked-upload-routes.js', function() {
 			});
 		});
 		
-		it('should throw a ValidationError if the supplied uploadId is considered invalid', function() {
+		it('should throw a ValidationError if the supplied uploadId is considered invalid', function(done) {
 			routes.delete.handler({
 				params: {
 					uploadId: 'uploadId'
 				}
 			},	{
 				json: function() {
+					should.fail();
 				}
 			}, function(error) {
 				should.exist(error);
 				error.should.be.an.instanceOf(errorModels.GenericError);
+				done();
 			});
 		});
 		
-		it('should throw a UploadMissing error if the supplied uploadId does not exist', function() {
+		it('should throw a UploadMissing error if the supplied uploadId does not exist', function(done) {
 			routes.delete.handler({
 				params: {
 					uploadId: 'uploadId'
 				}
 			},	{
 				json: function() {
+					should.fail();
 				}
 			}, function(error) {
 				should.exist(error);
 				error.should.be.an.instanceOf(errorModels.GenericError);
+				done();
+			});
+		});
+		
+		it('should throw a ServerError if the cache fails to restore an existing upload', function(done) {
+			cache_mock.setReturnErrorOnDelete(true);
+			routes.delete.handler({
+				params: {
+					uploadId: uploadId
+				}
+			},	{
+				json: function() {
+					should.fail();
+				}
+			}, function(error) {
+				should.exist(error);
+				error.should.be.an.Error();
+				done();
 			});
 		});
 	});

@@ -105,6 +105,19 @@ describe('chunked-upload-validators.js', function () {
 			valid.should.equal('Upload count missing, or does not match computed value, check upload file size and chunkSize.');
 		});
 		
+		it('should NOT return the signifier of a valid call for an uploadRequest with a count that does not match the fileSize / chunkSize + (fileSize % chunkSize > 0 ? 1 : 0)', function() {
+			var valid = validators.validateUploadRequest({
+				fileName: 'woot.txt',
+				fileSize: 1025,
+				chunkSize: 1024,
+				count: 3,
+				destination: '/i/am/a/path/to/a/destination'
+			}, 1025);
+			should.exist(valid);
+			valid.should.be.a.String();
+			valid.should.equal('Upload count missing, or does not match computed value, check upload file size and chunkSize.');
+		})
+		
 		it('should NOT return the signifier of a valid call for an uploadRequest with improper parameter typing', function() {
 			var valid = validators.validateUploadRequest({
 				fileName: 'woot.txt',
