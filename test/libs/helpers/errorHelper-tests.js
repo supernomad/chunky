@@ -3,6 +3,11 @@ var should = require('should'),
 	errorHelper = require.main.require('libs/helpers/errorHelper');
 	
 describe('errorHelper.js', function() {
+	it('should export an object', function() {
+		should.exist(errorHelper);
+		errorHelper.should.be.an.Object();
+	});
+	
 	describe('#genericErrorHandler', function() {
 		it('should throw an error if passed a valid object', function() {
 			(function () {

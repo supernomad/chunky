@@ -135,7 +135,7 @@ var routes = {
 									call(error);
 								});
 							}
-						], function(error, results) {
+						], function(error) {
 							callback(error, upload, complete);
 						});
 					} else {
