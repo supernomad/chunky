@@ -60,7 +60,7 @@ describe('chunked-download-validators.js', function () {
 				path: true
 			});
 			should.exist(valid);
-			valid.should.be.a.String()
+			valid.should.be.a.String();
 			valid.should.equal('Download path missing or it is not a string.');
 		});
 	});
