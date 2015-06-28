@@ -63,7 +63,7 @@ describe('chunked-upload-validators.js', function () {
 			}, 1024);
 			should.exist(valid);
 			valid.should.be.a.String();
-			valid.should.equal('Upload fileSize must be greater than 0 bytes.');
+			valid.should.equal('Upload fileSize must be greater than 0 bytes, or less than the maximum size of 1024 bytes.');
 		});
 		
 		it('should NOT return the signifier of a valid call for an uploadRequest with a fileSize > maxSize', function() {
@@ -76,7 +76,7 @@ describe('chunked-upload-validators.js', function () {
 			}, 512);
 			should.exist(valid);
 			valid.should.be.a.String();
-			valid.should.equal('Upload fileSize is greater than the maximum size of 512 bytes.');
+			valid.should.equal('Upload fileSize must be greater than 0 bytes, or less than the maximum size of 512 bytes.');
 		});
 		
 		it('should NOT return the signifier of a valid call for an uploadRequest with a chunkSize <= 0', function() {
@@ -102,7 +102,7 @@ describe('chunked-upload-validators.js', function () {
 			}, 1024);
 			should.exist(valid);
 			valid.should.be.a.String();
-			valid.should.equal('Upload count does not match computed value, check upload file size and chunkSize.');
+			valid.should.equal('Upload count missing, or does not match computed value, check upload file size and chunkSize.');
 		});
 		
 		it('should NOT return the signifier of a valid call for an uploadRequest with improper parameter typing', function() {
@@ -137,7 +137,7 @@ describe('chunked-upload-validators.js', function () {
 			}, 1024);
 			should.exist(valid);
 			valid.should.be.a.String();
-			valid.should.equal('Upload count missing.');
+			valid.should.equal('Upload count missing, or does not match computed value, check upload file size and chunkSize.');
 			
 			valid = validators.validateUploadRequest({
 				fileName: true,
