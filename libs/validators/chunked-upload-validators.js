@@ -3,7 +3,7 @@ var typeHelper = require.main.require('libs/helpers/typeHelper');
 var valid = 'valid';
 
 function checkChunks(count, fileSize, chunkSize) {
-	return count !== (fileSize / chunkSize | 0) + (fileSize % chunkSize > 0 ? 1 : 0)
+	return count !== (fileSize / chunkSize | 0) + (fileSize % chunkSize > 0 ? 1 : 0);
 }
 
 function validateUploadRequest(uploadRequest, maxSize) {
