@@ -92,7 +92,7 @@ describe('chunked-download-routes.js', function() {
 			routes.get.uri.should.be.a.String();
 			
 			should.exist(routes.get.handler);
-			routes.get.handler.should.be.a.Function()();
+			routes.get.handler.should.be.a.Function();
 		});
 		
 		it('should get the specified chunk from the specified download file', function(done) {
@@ -104,7 +104,7 @@ describe('chunked-download-routes.js', function() {
 			}, {
 				send: function(buffer) {
 					should.exist(buffer);
-					buffer.should.be.a.Buffer();
+					buffer.should.be.an.instanceOf(Buffer);
 					done();
 				}
 			}, function() {
