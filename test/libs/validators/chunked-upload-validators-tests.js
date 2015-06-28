@@ -116,7 +116,7 @@ describe('chunked-upload-validators.js', function () {
 			should.exist(valid);
 			valid.should.be.a.String();
 			valid.should.equal('Upload count missing, or does not match computed value, check upload file size and chunkSize.');
-		})
+		});
 		
 		it('should NOT return the signifier of a valid call for an uploadRequest with improper parameter typing', function() {
 			var valid = validators.validateUploadRequest({
