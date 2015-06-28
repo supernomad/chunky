@@ -38,7 +38,8 @@
     "grunt-remove": "~0.1.0",
     "supertest": "~1.0.1",
     "mockery": "~1.4.0",
-    "sinon": "~1.15.3"
+    "sinon": "~1.15.3",
+    "grunt-codacy": "~1.1.0"
   },
   "dependencies": {
     "node-cache": "~3.0.0",

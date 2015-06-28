@@ -28,9 +28,14 @@ module.exports = function(grunt) {
             coverage: {
                 src: 'coverage/*.info'
             }
+        },
+        codacy: {
+            options: {
+                token: "67fda9f7292a4d1ab17273d23077abd4"
+            }
         }
     });
 
-    grunt.registerTask('build', ['mkdir:testDir', 'mocha_istanbul:coverage', 'coveralls:coverage']);
+    grunt.registerTask('build', ['mkdir:testDir', 'mocha_istanbul:coverage', 'coveralls:coverage', 'codacy']);
     grunt.registerTask('default', ['mkdir:testDir', 'mocha_istanbul:coverage']);
 };
