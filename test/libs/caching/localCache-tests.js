@@ -10,7 +10,7 @@ describe('localCache.js', function () {
 			localCache.create(key, object, 30, function (error, success) {
 				should.not.exist(error);
 				should.exist(success);
-				success.should.be.true;
+				success.should.be.true();
 				done();
 			});
 		});
@@ -20,7 +20,7 @@ describe('localCache.js', function () {
 			var key = 'test-key-create';
 			var test = localCache.create(key, object, 30);
 			should.exist(test);
-			test.should.be.true;
+			test.should.be.true();
 		});
 	});
 	
@@ -64,7 +64,7 @@ describe('localCache.js', function () {
 			localCache.update(key, object, 30, function (error, success) {
 				should.not.exist(error);
 				should.exist(success);
-				success.should.be.true;
+				success.should.be.true();
 				localCache.restore(key, function (error, keyVal) {
 					should.not.exist(error);
 					should.exist(keyVal);
@@ -84,7 +84,7 @@ describe('localCache.js', function () {
 			var key = 'test-key-create';
 			var test = localCache.update(key, object, 30);
 			should.exist(test);
-			test.should.be.true;
+			test.should.be.true();
 			
 			test = localCache.restore(key);
 			

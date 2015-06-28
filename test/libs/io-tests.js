@@ -16,7 +16,7 @@ describe('io.js', function() {
 					should.not.exist(statError);
 					should.exist(stats);
 
-					stats.isFile().should.be.true;
+					stats.isFile().should.be.true();
 					stats.size.should.equal(1000);
 										
 					done();
@@ -36,7 +36,7 @@ describe('io.js', function() {
 					should.not.exist(statError);
 					should.exist(stats);
 
-					stats.isFile().should.be.true;
+					stats.isFile().should.be.true();
 					stats.size.should.equal(1500);
 										
 					done();
@@ -86,7 +86,7 @@ describe('io.js', function() {
 					should.not.exist(statError);
 					should.exist(stats);
 
-					stats.isFile().should.be.true;
+					stats.isFile().should.be.true();
 					stats.size.should.equal(1500);
 										
 					done();

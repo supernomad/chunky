@@ -16,7 +16,7 @@ describe('chunked-download-routes.js', function() {
 	
 	it('should return a route object', function() {
 		should.exist(routes);
-		routes.should.be.a.Object;
+		routes.should.be.a.Object();
 	});
 	
 	describe('#POST', function() {
@@ -24,10 +24,10 @@ describe('chunked-download-routes.js', function() {
 			should.exist(routes.post);
 			
 			should.exist(routes.post.uri);
-			routes.post.uri.should.be.a.String;
+			routes.post.uri.should.be.a.String();
 			
 			should.exist(routes.post.handler);
-			routes.post.handler.should.be.a.Function;
+			routes.post.handler.should.be.a.Function();
 		});
 		
 		it('should create a new download if the request object is considered valid', function(done) {
@@ -39,10 +39,10 @@ describe('chunked-download-routes.js', function() {
 				json: function(data) {
 					should.exist(data);
 					should.exist(data.data);
-					data.data.should.be.a.Object;
+					data.data.should.be.a.Object();
 					data.data.count.should.be.a.Number;
 					data.data.chunkSize.should.be.a.Number;
-					/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[8,9,a,b][0-9a-f]{3}-[0-9a-f]{12}$/ig.test(data.data.id).should.be.true;
+					/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[8,9,a,b][0-9a-f]{3}-[0-9a-f]{12}$/ig.test(data.data.id).should.be.true();
 					downloadId = data.data.id;
 					done();
 				}
@@ -89,10 +89,10 @@ describe('chunked-download-routes.js', function() {
 			should.exist(routes.get);
 			
 			should.exist(routes.get.uri);
-			routes.get.uri.should.be.a.String;
+			routes.get.uri.should.be.a.String();
 			
 			should.exist(routes.get.handler);
-			routes.get.handler.should.be.a.Function;
+			routes.get.handler.should.be.a.Function()();
 		});
 		
 		it('should get the specified chunk from the specified download file', function(done) {
@@ -104,7 +104,7 @@ describe('chunked-download-routes.js', function() {
 			}, {
 				send: function(buffer) {
 					should.exist(buffer);
-					buffer.should.be.an.Buffer;
+					buffer.should.be.a.Buffer();
 					done();
 				}
 			}, function() {
@@ -188,10 +188,10 @@ describe('chunked-download-routes.js', function() {
 			should.exist(routes.delete);
 			
 			should.exist(routes.delete.uri);
-			routes.delete.uri.should.be.a.String;
+			routes.delete.uri.should.be.a.String();
 			
 			should.exist(routes.delete.handler);
-			routes.delete.handler.should.be.a.Function;
+			routes.delete.handler.should.be.a.Function();
 		});
 		
 		it('should remove the specified download from the cache', function(done) {
@@ -203,7 +203,7 @@ describe('chunked-download-routes.js', function() {
 				json: function(data) {
 					should.exist(data);
 					should.exist(data.data);
-					data.data.should.be.an.String;
+					data.data.should.be.a.String();
 					data.data.should.equal('Download: ' + downloadId + ', deleted successfuly.');
 					done();
 				}
@@ -250,7 +250,7 @@ describe('chunked-download-routes.js', function() {
 			should.exist(routes.error);
 			
 			should.exist(routes.error.handler);
-			routes.error.handler.should.be.a.Function;
+			routes.error.handler.should.be.a.Function();
 		});
 		
 		it('should handle any custom errors', function(done) {
@@ -264,29 +264,16 @@ describe('chunked-download-routes.js', function() {
 						},
 						json: function(data) {
 							should.exist(data);
-							data.should.be.a.Object;
+							data.should.be.a.Object();
 							should.exist(data.Error);
 							should.exist(data.Message);
-							done();
+							callback();
 						}
 					}, function() {
 						should.fail();
-					 });
-				}
-			], function(error) {
-				
-			});
-			routes.error.handler(errorModels.DownloadMissing(), null, {
-				status: function(status) {
-					should.exist(status);
-					status.should.be.a.Number;
-					status.should.equal(404);
+					});
 				},
-				json: function(data) {
-					should.exist(data);
-					data.should.be.a.Object;
-					should.exist(data.Error);
-					should.exist(data.Message);
+				function(callback) {
 					routes.error.handler(errorModels.ValidationError('error'), null, {
 						status: function(status) {
 							should.exist(status);
@@ -295,14 +282,36 @@ describe('chunked-download-routes.js', function() {
 						},
 						json: function(data) {
 							should.exist(data);
-							data.should.be.a.Object;
+							data.should.be.a.Object();
 							should.exist(data.Error);
 							should.exist(data.Message);
-							
+							callback();
 						}
-					}, function(){ false.should.be.true; });
+					}, function() {
+						should.fail(); 
+					});
+				},
+				function(callback) {
+					routes.error.handler(errorModels.DownloadMissing(), null, {
+						status: function(status) {
+							should.exist(status);
+							status.should.be.a.Number;
+							status.should.equal(404);
+						},
+						json: function(data) {
+							should.exist(data);
+							data.should.be.a.Object();
+							should.exist(data.Error);
+							should.exist(data.Message);
+							callback();
+						}
+					}, function() {
+						should.fail(); 
+					});
 				}
-			}, function(){ false.should.be.true; });
+			], function(error) {
+				done();
+			});
 		});
 		
 		

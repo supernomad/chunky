@@ -19,7 +19,7 @@ describe('chunked-upload-routes.js', function() {
 	
 	it('should return a route object', function() {
 		should.exist(routes);
-		routes.should.be.a.Object;
+		routes.should.be.a.Object();
 	});
 	
 	describe('#POST', function() {
@@ -27,10 +27,10 @@ describe('chunked-upload-routes.js', function() {
 			should.exist(routes.post);
 			
 			should.exist(routes.post.uri);
-			routes.post.uri.should.be.a.String;
+			routes.post.uri.should.be.a.String();
 			
 			should.exist(routes.post.handler);
-			routes.post.handler.should.be.a.Function;
+			routes.post.handler.should.be.a.Function();
 		});
 		
 		it('should create a new upload if the request object is considered valid', function(done) {
@@ -46,7 +46,7 @@ describe('chunked-upload-routes.js', function() {
 				json: function(data) {
 					should.exist(data);
 					should.exist(data.data);
-					data.data.should.be.a.String;
+					data.data.should.be.a.String();
 					/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[8,9,a,b][0-9a-f]{3}-[0-9a-f]{12}$/ig.test(data.data).should.be.true;
 					uploadId = data.data;
 					done();
@@ -96,10 +96,10 @@ describe('chunked-upload-routes.js', function() {
 			should.exist(routes.get);
 			
 			should.exist(routes.get.uri);
-			routes.get.uri.should.be.a.String;
+			routes.get.uri.should.be.a.String();
 			
 			should.exist(routes.get.handler);
-			routes.get.handler.should.be.a.Function;
+			routes.get.handler.should.be.a.Function();
 		});
 		
 		it('should return the requested upload if it exists and the supplied uploadId is a valid identifier', function(done) {
@@ -111,7 +111,7 @@ describe('chunked-upload-routes.js', function() {
 				json: function(data) {
 					should.exist(data);
 					should.exist(data.data);
-					data.data.should.be.an.Object;
+					data.data.should.be.a.Object();
 					done();
 				}
 			}, function(error) {
@@ -168,10 +168,10 @@ describe('chunked-upload-routes.js', function() {
 			should.exist(routes.put);
 			
 			should.exist(routes.put.uri);
-			routes.put.uri.should.be.a.String;
+			routes.put.uri.should.be.a.String();
 			
 			should.exist(routes.put.handler);
-			routes.put.handler.should.be.a.Function;
+			routes.put.handler.should.be.a.Function();
 		});
 		
 		it('should handle an error thrown by the cache updating an upload', function() {
@@ -234,7 +234,7 @@ describe('chunked-upload-routes.js', function() {
 							try {
 								should.exist(data);
 								should.exist(data.data);
-								data.data.should.be.an.String;
+								data.data.should.be.a.String();
 								data.data.should.equal('Chunk Recieved');
 								callback(null);
 							} catch(error) {
@@ -261,7 +261,7 @@ describe('chunked-upload-routes.js', function() {
 							try {
 								should.exist(data);
 								should.exist(data.data);
-								data.data.should.be.an.String;
+								data.data.should.be.a.String();
 								data.data.should.equal('Upload Complete');
 								callback(null);
 							} catch(error) {
@@ -381,10 +381,10 @@ describe('chunked-upload-routes.js', function() {
 			should.exist(routes.delete);
 			
 			should.exist(routes.delete.uri);
-			routes.delete.uri.should.be.a.String;
+			routes.delete.uri.should.be.a.String();
 			
 			should.exist(routes.delete.handler);
-			routes.delete.handler.should.be.a.Function;
+			routes.delete.handler.should.be.a.Function();
 		});
 		
 		it('should remove the specified upload from the cache and disk', function(done) {
@@ -396,7 +396,7 @@ describe('chunked-upload-routes.js', function() {
 				json: function(data) {
 					should.exist(data);
 					should.exist(data.data);
-					data.data.should.be.an.String;
+					data.data.should.be.a.String();
 					data.data.should.equal('Upload: ' + uploadId + ', deleted successfuly.');
 					done();
 				}
@@ -439,7 +439,7 @@ describe('chunked-upload-routes.js', function() {
 			should.exist(routes.error);
 			
 			should.exist(routes.error.handler);
-			routes.error.handler.should.be.a.Function;
+			routes.error.handler.should.be.a.Function();
 		});
 		
 		it('should handle any custom errors', function(done) {
@@ -454,7 +454,7 @@ describe('chunked-upload-routes.js', function() {
 						json: function(data) {
 							try {
 								should.exist(data);
-								data.should.be.a.Object;
+								data.should.be.a.Object();
 								should.exist(data.Error);
 								should.exist(data.Message);
 								callback(null);
@@ -476,7 +476,7 @@ describe('chunked-upload-routes.js', function() {
 						json: function(data) {
 							try {
 								should.exist(data);
-								data.should.be.a.Object;
+								data.should.be.a.Object();
 								should.exist(data.Error);
 								should.exist(data.Message);
 								callback(null);
@@ -498,7 +498,7 @@ describe('chunked-upload-routes.js', function() {
 						json: function(data) {
 							try {
 								should.exist(data);
-								data.should.be.a.Object;
+								data.should.be.a.Object();
 								should.exist(data.Error);
 								should.exist(data.Message);
 								callback(null);
