@@ -22,76 +22,106 @@ var routes = {
 			next(errorModels.ValidationError('The supplied downloadId is not a valid v4 GUID'));	
 		} else if (!typeHelper.isNumber(index)) {
 			next(errorModels.ValidationError('The supplied index is not a valid number'));
-		}
-		async.waterfall([
-			function(callback) {
-				dataCache.restore(req.params.downloadId, function(error, download) {
-					if(typeHelper.doesExist()) {
-						
-					}
-				});
-			}
-		], function(error, result) {
-			
-		});
-		dataCache.restore(req.params.downloadId, function(error, keyVal) {
-			errorHelper.genericErrorHandler(error);
-			if(typeHelper.doesExist(keyVal.value)) {
-				var download = keyVal.value,
-					buffer = new Buffer(chunkSize);
-				
-				function readCallback(error, read, buffer) {
-					errorHelper.genericErrorHandler(error);
-					res.send(buffer);
-				}
-				
-				download.chunks[index] = true;
-				dataCache.update(download.id, download, defaultTtl, function (error, success) {
-					errorHelper.genericErrorHandler(error);
+		} else {
+			async.waterfall([
+				function(callback) {
+					dataCache.restore(req.params.downloadId, function(error, download) {
+						if(typeHelper.doesExist(error)) {
+							callback(error);
+						} else if (typeHelper.doesExist(download.value)) {
+							download.value.chunks[index] = true;
+							callback(null, download.value);
+						} else {
+							callback(errorModels.DownloadMissing());
+						}
+					});
+				},
+				function(download, callback) {
+					dataCache.update(download.id, download, defaultTtl, function(error, success) {
+						callback(error, download, success);
+					});
+				},
+				function(download, success, callback) {
 					if(success) {
-						io.ReadFileChunk(download.path, buffer, 0, buffer.length, index * chunkSize, readCallback);
+						var buff = new Buffer(chunkSize);
+						io.ReadFileChunk(download.path, buff, 0, buff.length, index * chunkSize, function(error, read, buffer) {
+							callback(error, buffer);
+						});
 					} else {
-						throw errorModels.ServerError();
+						callback(errorModels.ServerError());
 					}
-				});
-			} else {
-				throw errorModels.DownloadMissing();
-			}
-		});
-	}),
-	'post': new apiModels.RouteHandler(routePrefix, function (req, res, next) {
-		var valid = validators.validateDownloadRequest(req.body);
-		if(valid !== validators.valid) {
-			throw errorModels.ValidationError(valid);
-		}
-		io.GetFileStats(req.body.path, function(error, stats) {
-			errorHelper.genericErrorHandler(error);
-			var download = new apiModels.Download(req.body, stats.size, chunkSize);
-			download.configure(guidHelper.newGuid());
-			
-			dataCache.create(download.id, download, defaultTtl, function (createError, success) {
-				errorHelper.genericErrorHandler(createError);
-				if(success) {
-					res.json(new apiModels.ApiResponse(routePrefix, {}, download));
+				}
+			], function(error, result) {
+				if(typeHelper.doesExist(error)) {
+					next(error);
 				} else {
-					throw errorModels.ServerError();
+					res.send(result);
 				}
 			});
-		});
+		}
+	}),
+	'post': new apiModels.RouteHandler(routePrefix, function(req, res, next) {
+		var valid = validators.validateDownloadRequest(req.body);
+		if(valid !== validators.valid) {
+			next(errorModels.ValidationError(valid));
+		} else {
+			async.waterfall([
+				function(callback) {
+					io.GetFileStats(req.body.path, function(error, stats) {
+						if(typeHelper.doesExist(error)) {
+							callback(error);
+						} else {
+							var download = new apiModels.Download(req.body, stats.size, chunkSize);
+							download.configure(guidHelper.newGuid());
+							callback(null, download);
+						}
+					});
+				},
+				function(download, callback) {
+					dataCache.create(download.id, download, defaultTtl, function(error, success) {
+						callback(error, download, success);
+					});
+				}
+			], function(error, download, success) {
+				if(typeHelper.doesExist(error)) {
+					next(error);
+				} else if(success) {
+					res.json(new apiModels.ApiResponse(routePrefix, {}, download));
+				} else {
+					next(errorModels.ServerError());
+				}
+			});
+		}
 	}),
 	'delete': new apiModels.RouteHandler(routePrefix + '/:downloadId', function (req, res, next) {
 		if (!guidHelper.isGuid(req.params.downloadId)){
-			throw errorModels.ValidationError('The supplied downloadId is not a valid v4 GUID');	
-		}
-		
-		dataCache.restore(req.params.downloadId, function(error, download) {
-			errorHelper.genericErrorHandler(error, debug);
-
-			dataCache.delete(download.id, function (error, count) {
-				errorHelper.genericErrorHandler(error);
-				res.json(new apiModels.ApiResponse(routePrefix, {}, 'Download: ' + req.params.downloadId + ', deleted successfuly.'));
+			next(errorModels.ValidationError('The supplied downloadId is not a valid v4 GUID'));	
+		} else {
+			async.waterfall([
+				function(callback) {
+					dataCache.restore(req.params.downloadId, function(error, download) {
+						if(typeHelper.doesExist(error)) {
+							callback(error);
+						} else if (typeHelper.doesExist(download.value)) {
+							callback(null, download.value);
+						} else {
+							callback(errorModels.DownloadMissing());
+						}
+					});
+				},
+				function(download, callback) {
+					dataCache.delete(download.id, function(error, count) {
+						callback(error, download);
+					});
+				}
+			], function(error, result) {
+				if(typeHelper.doesExist(error)) {
+					next(error);
+				} else {
+					res.json(new apiModels.ApiResponse(routePrefix, {}, 'Download: ' + req.params.downloadId + ', deleted successfuly.'));
+				}
 			});
-		});
+		}
 	}),
 	'error': new apiModels.ErrorHandler(function (error, req, res, next) {
 		if(error instanceof errorModels.GenericError) {
@@ -101,7 +131,7 @@ var routes = {
 				Message: error.Message
 			});
 		} else {
-			next();
+			next(error);
 		}
 	})
 };

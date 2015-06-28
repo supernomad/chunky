@@ -1,9 +1,10 @@
 /* global describe, it, afterEach */
-var	should = require('should'),
+var	async = require('async'),
+	should = require('should'),
 	errorModels = require.main.require('libs/models/errorModels'),
 	guidHelper = require.main.require('libs/helpers/guidHelper');
 	
-describe('chunked-upload-routes.js', function() {
+describe('chunked-download-routes.js', function() {
 	var io_mock = require.main.require('mocks/libs/io'),
 		cache_mock = require.main.require('mocks/libs/caching/localCache'),
 		routes = require.main.require('routes/chunked-download-routes')(cache_mock, io_mock, {debug:true, routePrefix:'/chunked/download', chunkSize: 1024}),
@@ -45,33 +46,41 @@ describe('chunked-upload-routes.js', function() {
 					downloadId = data.data.id;
 					done();
 				}
+			}, function() {
+				should.fail();
 			});
 		});
 		
-		it('should throw a ServerError if the cache fails to store the upload data', function() {
+		it('should throw a ServerError if the cache fails to store the download data', function(done) {
 			cache_mock.setReturnValue(false);
-			(function() {
-				routes.post.handler({
-					body: {
-						path: '/i/am/a/path/to/a/destination'
-					}
-				},	{ 
-					json: function(data) {
-					}
-				});
-			}).should.throw(errorModels.GenericError);;
+			routes.post.handler({
+				body: {
+					path: '/i/am/a/path/to/a/destination'
+				}
+			},	{ 
+				json: function() {
+					should.fail();
+				}
+			}, function(error) {
+				should.exist(error);
+				error.should.be.an.instanceOf(errorModels.GenericError);
+				done();
+			});
 		});
 		
-		it('should throw a ValidationError if the request object is considered invalid', function() {
-			(function() {
-				routes.post.handler({
-					body: {					
-					}
-				},	{ 
-					json: function(data) {
-					}
-				});
-			}).should.throw(errorModels.GenericError);;
+		it('should throw a ValidationError if the request object is considered invalid', function(done) {
+			routes.post.handler({
+				body: {					
+				}
+			},	{ 
+				json: function() {
+					should.fail();
+				}
+			}, function(error) {
+				should.exist(error);
+				error.should.be.an.instanceOf(errorModels.GenericError);
+				done();
+			});
 		});
 	});
 	
@@ -98,64 +107,79 @@ describe('chunked-upload-routes.js', function() {
 					buffer.should.be.an.Buffer;
 					done();
 				}
+			}, function() {
+				should.fail();
 			});
 		});
 		
-		it('should throw a ServerError if the cache fails to store the download data', function() {
+		it('should throw a ServerError if the cache fails to store the download data', function(done) {
 			cache_mock.setReturnValue(false);
-			(function() {
-				routes.get.handler({
-					params: {
-						downloadId: downloadId,
-						index: 0
-					}
-				}, {
-					send: function(buffer) {
-					}
-				});
-			}).should.throw(errorModels.GenericError);
+			routes.get.handler({
+				params: {
+					downloadId: downloadId,
+					index: 0
+				}
+			}, {
+				send: function() {
+					should.fail();
+				}
+			}, function(error) {
+				should.exist(error);
+				error.should.be.an.instanceOf(errorModels.GenericError);
+				done();
+			});
 		});
 		
-		it('should throw a DownloadMissing error if the supplied downloadId does not exist', function() {
-			(function() {
-				routes.get.handler({
-					params: {
-						downloadId: guidHelper.newGuid(),
-						index: 0
-					}
-				}, {
-					send: function(buffer) {
-					}
-				});
-			}).should.throw(errorModels.GenericError);
+		it('should throw a DownloadMissing error if the supplied downloadId does not exist', function(done) {
+			routes.get.handler({
+				params: {
+					downloadId: guidHelper.newGuid(),
+					index: 0
+				}
+			}, {
+				send: function() {
+					should.fail();
+				}
+			}, function(error) {
+				should.exist(error);
+				error.should.be.an.instanceOf(errorModels.GenericError);
+				done();
+			});
 		});
 		
-		it('should throw a ValidationError if the supplied downloadId is not a valid v4 GUID', function() {
-			(function() {
-				routes.get.handler({
-					params: {
-						downloadId: 'downloadId',
-						index: 0
-					}
-				}, {
-					send: function(buffer) {
-					}
-				});
-			}).should.throw(errorModels.GenericError);
+		it('should throw a ValidationError if the supplied downloadId is not a valid v4 GUID', function(done) {
+			routes.get.handler({
+				params: {
+					downloadId: 'downloadId',
+					index: 0
+				}
+			}, {
+				send: function() {
+					should.fail();
+				}
+			},
+			function(error) {
+				should.exist(error);
+				error.should.be.an.instanceOf(errorModels.GenericError);
+				done();
+			});
 		});
 
-		it('should throw a ValidationError if the supplied index is not a valid number >= 0', function() {
-			(function() {
-				routes.get.handler({
-					params: {
-						downloadId: downloadId,
-						index: ''
-					}
-				}, {
-					send: function(buffer) {
-					}
-				});
-			}).should.throw(errorModels.GenericError);
+		it('should throw a ValidationError if the supplied index is not a valid number >= 0', function(done) {
+			routes.get.handler({
+				params: {
+					downloadId: downloadId,
+					index: ''
+				}
+			}, {
+				send: function() {
+					should.fail();
+				}
+			}, function(error) {
+				should.exist(error);
+				error.should.be.an.instanceOf(errorModels.GenericError);
+				done();
+			});
 		});
 	});
 	
@@ -183,33 +207,41 @@ describe('chunked-upload-routes.js', function() {
 					data.data.should.equal('Download: ' + downloadId + ', deleted successfuly.');
 					done();
 				}
+			}, function() {
+				should.fail();
 			});
 		});
 		
-		it('should throw a ValidationError if the supplied downloadId is considered invalid', function() {
-			(function() {
-				routes.delete.handler({
-					params: {
-						downloadId: 'downloadId'
-					}
-				},	{
-					json: function(data) {
-					}
-				});
-			}).should.throw(errorModels.GenericError);;
+		it('should throw a ValidationError if the supplied downloadId is considered invalid', function(done) {
+			routes.delete.handler({
+				params: {
+					downloadId: 'downloadId'
+				}
+			},	{
+				json: function() {
+					should.fail();
+				}
+			}, function(error) {
+				should.exist(error);
+				error.should.be.an.instanceOf(errorModels.GenericError);
+				done();
+			});
 		});
 		
-		it('should throw a UploadMissing error if the supplied downloadId does not exist', function() {
-			(function() {
-				routes.delete.handler({
-					params: {
-						downloadId: 'downloadId'
-					}
-				},	{
-					json: function(data) {
-					}
-				});
-			}).should.throw(errorModels.GenericError);;
+		it('should throw a UploadMissing error if the supplied downloadId does not exist', function(done) {
+			routes.delete.handler({
+				params: {
+					downloadId: 'downloadId'
+				}
+			},	{
+				json: function() {
+					should.fail();
+				}
+			}, function(error) {
+				should.exist(error);
+				error.should.be.an.instanceOf(errorModels.GenericError);
+				done();
+			});
 		});
 	});
 	
@@ -222,6 +254,28 @@ describe('chunked-upload-routes.js', function() {
 		});
 		
 		it('should handle any custom errors', function(done) {
+			async.series([
+				function(callback) {
+					routes.error.handler(errorModels.ServerError(), null, {
+						status: function(status) {
+							should.exist(status);
+							status.should.be.a.Number;
+							status.should.equal(500);
+						},
+						json: function(data) {
+							should.exist(data);
+							data.should.be.a.Object;
+							should.exist(data.Error);
+							should.exist(data.Message);
+							done();
+						}
+					}, function() {
+						should.fail();
+					 });
+				}
+			], function(error) {
+				
+			});
 			routes.error.handler(errorModels.DownloadMissing(), null, {
 				status: function(status) {
 					should.exist(status);
@@ -244,20 +298,7 @@ describe('chunked-upload-routes.js', function() {
 							data.should.be.a.Object;
 							should.exist(data.Error);
 							should.exist(data.Message);
-							routes.error.handler(errorModels.ServerError(), null, {
-								status: function(status) {
-									should.exist(status);
-									status.should.be.a.Number;
-									status.should.equal(500);
-								},
-								json: function(data) {
-									should.exist(data);
-									data.should.be.a.Object;
-									should.exist(data.Error);
-									should.exist(data.Message);
-									done();
-								}
-							}, function(){ false.should.be.true; });
+							
 						}
 					}, function(){ false.should.be.true; });
 				}
@@ -266,8 +307,9 @@ describe('chunked-upload-routes.js', function() {
 		
 		
 		it('should call next if it is not a custom error', function(done) {
-			routes.error.handler(new Error('Generic error'), null, null, function() {
-				true.should.be.true;
+			routes.error.handler(new Error('Generic error'), null, null, function(error) {
+				should.exist(error);
+				error.should.be.an.Error;
 				done();
 			});
 		});

@@ -57,8 +57,11 @@ var routes = {
 					});
 				}
 			], function(error, upload) {
-				if(typeHelper.doesExist(error)) next(error);
-				res.json(new apiModels.ApiResponse(routePrefix, {}, upload.id));
+				if(typeHelper.doesExist(error)) {
+					next(error);
+				} else {
+					res.json(new apiModels.ApiResponse(routePrefix, {}, upload.id));
+				}
 			});
 		}
 	}),
@@ -141,7 +144,9 @@ var routes = {
 					}
 				}
 			], function(error, upload, complete) {
-				if(typeHelper.doesExist(error)) next(error);
+				if(typeHelper.doesExist(error)) {
+					next(error);
+				}
 				else if(complete) {
 					res.json(new apiModels.ApiResponse(routePrefix, {}, 'Upload Complete'));
 				} else {
@@ -171,8 +176,11 @@ var routes = {
 					});
 				}
 			], function(error) {
-				if(typeHelper.doesExist(error)) next(error);
-				res.json(new apiModels.ApiResponse(routePrefix, {}, 'Upload: ' + req.params.uploadId + ', deleted successfuly.'));
+				if(typeHelper.doesExist(error)) {
+					next(error);
+				} else {
+					res.json(new apiModels.ApiResponse(routePrefix, {}, 'Upload: ' + req.params.uploadId + ', deleted successfuly.'));
+				}
 			});
 		}
 	}),
