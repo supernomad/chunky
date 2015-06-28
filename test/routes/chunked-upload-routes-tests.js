@@ -448,7 +448,7 @@ describe('chunked-upload-routes.js', function() {
 					routes.error.handler(errorModels.UploadMissing(), null, {
 						status: function(status) {
 							should.exist(status);
-							status.should.be.a.Number;
+							status.should.be.a.Number();
 							status.should.equal(404);
 						},
 						json: function(data) {
@@ -470,7 +470,7 @@ describe('chunked-upload-routes.js', function() {
 					routes.error.handler(errorModels.ValidationError('error'), null, {
 						status: function(status) {
 							should.exist(status);
-							status.should.be.a.Number;
+							status.should.be.a.Number();
 							status.should.equal(400);
 						},
 						json: function(data) {
@@ -492,7 +492,7 @@ describe('chunked-upload-routes.js', function() {
 					routes.error.handler(errorModels.ServerError(), null, {
 						status: function(status) {
 							should.exist(status);
-							status.should.be.a.Number;
+							status.should.be.a.Number();
 							status.should.equal(500);
 						},
 						json: function(data) {
