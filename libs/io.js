@@ -6,6 +6,14 @@ function getFileStats(path, callback) {
 	});
 }
 
+function getWriteStream(path, position, type) {
+	return fs.createWriteStream(path, { 
+		flags: type,
+		mode: 0666,
+		start: position
+	});
+}
+
 function createFile(path, buffer, offset, length, callback) {
 	var stream = getWriteStream(path, 0, 'w');
 	return stream.write(buffer.slice(offset, offset + length), function(error) {
@@ -45,14 +53,6 @@ function readFileChunk(path, buffer, offset, length, position, callback) {
 function renameFile(path, newPath, callback) {
 	fs.rename(path, newPath, function(error) {
 		callback(error);
-	});
-}
-
-function getWriteStream(path, position, type) {
-	return fs.createWriteStream(path, { 
-		flags: type,
-		mode: 0666,
-		start: position
 	});
 }
 

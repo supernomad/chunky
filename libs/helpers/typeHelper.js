@@ -1,9 +1,9 @@
 function doesExist(obj) {
-	return obj != null && obj != undefined;
+	return obj !== null && obj !== undefined;
 }
 
 function isObject(obj) {
-	return doesExist(obj) && typeof obj === "object";
+	return doesExist(obj) && typeof obj === 'object';
 }
 
 function isFunction(obj) {
@@ -11,15 +11,15 @@ function isFunction(obj) {
 }
 
 function isString(obj) {
-	return doesExist(obj) && typeof obj === "string";
+	return doesExist(obj) && typeof obj === 'string';
 }
 
 function isBoolean(obj) {
-	return doesExist(obj) && typeof obj === "boolean";
+	return doesExist(obj) && typeof obj === 'boolean';
 }
 
 function isNumber(obj) {
-	return doesExist(obj) && typeof obj === "number";
+	return doesExist(obj) && !isNaN(obj) && typeof obj === 'number';
 }
 
 function isType(obj, typ) {

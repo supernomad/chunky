@@ -1,8 +1,8 @@
 /* global describe, it , Buffer */
-var io = require('./../libs/io'),
-	should = require('should'),
-	tempFile = "./tmp/tests/tmp.temp",
-	renameFile = "./tmp/tests/temp-rename.temp";
+var should = require('should'),
+	io = require.main.require('libs/io'),
+	tempFile = './tmp/tests/tmp.temp',
+	renameFile = './tmp/tests/temp-rename.temp';
 
 describe('io.js', function() {
 	describe('#CreateFile', function() {
@@ -16,13 +16,13 @@ describe('io.js', function() {
 					should.not.exist(statError);
 					should.exist(stats);
 
-					stats.isFile().should.be.true;
+					stats.isFile().should.be.true();
 					stats.size.should.equal(1000);
 										
 					done();
 				});
 			});
-			fullyBuffered.should.be.a.Boolean;
+			fullyBuffered.should.be.a.Boolean();
 		});
 	});
 	
@@ -36,13 +36,13 @@ describe('io.js', function() {
 					should.not.exist(statError);
 					should.exist(stats);
 
-					stats.isFile().should.be.true;
+					stats.isFile().should.be.true();
 					stats.size.should.equal(1500);
 										
 					done();
 				});
 			});
-			fullyBuffered.should.be.a.Boolean;
+			fullyBuffered.should.be.a.Boolean();
 		});
 	});
 	
@@ -86,7 +86,7 @@ describe('io.js', function() {
 					should.not.exist(statError);
 					should.exist(stats);
 
-					stats.isFile().should.be.true;
+					stats.isFile().should.be.true();
 					stats.size.should.equal(1500);
 										
 					done();
