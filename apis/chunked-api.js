@@ -4,16 +4,16 @@ var express = require('express'),
 	
 var multer = require('multer'),
 	bodyParser = require('body-parser'),
-	typeHelper = require.main.require('libs/helpers/typeHelper'),
-	io = require.main.require('libs/io'),
+	typeHelper = require('../libs/helpers/typeHelper'),
+	io = require('../libs/io'),
 	apiCache = null,
 	uploadRoutes = null,
 	downloadRoutes = null,
 	tempChunkPath = __dirname + '/tmp/chunks';
-	
+
 function configure(cache, options) {
 	if(!typeHelper.isObject(cache)) {
-		apiCache = require.main.require('libs/caching/localCache');
+		apiCache = require('../libs/caching/localCache');
 	}
 	else {
 		apiCache = cache;
@@ -23,8 +23,8 @@ function configure(cache, options) {
 		options = {};
 	}
 	
-	uploadRoutes = require.main.require('routes/chunked-upload-routes')(apiCache, io, options);
-	downloadRoutes = require.main.require('routes/chunked-download-routes')(apiCache, io, options);
+	uploadRoutes = require('../routes/chunked-upload-routes')(apiCache, io, options);
+	downloadRoutes = require('../routes/chunked-download-routes')(apiCache, io, options);
 	
 	// Request parsing
 	router.use(bodyParser.json());
@@ -51,4 +51,4 @@ function configure(cache, options) {
 	return router;
 }
 
-module.export = configure;
+module.exports = configure;

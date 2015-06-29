@@ -1,11 +1,11 @@
 /* global Buffer */
 var async = require('async'),
-	apiModels = require.main.require('libs/models/apiModels'),
-	errorModels = require.main.require('libs/models/errorModels'),
-	guidHelper = require.main.require('libs/helpers/guidHelper'),
-	typeHelper = require.main.require('libs/helpers/typeHelper'),
-	stringHelper = require.main.require('libs/helpers/stringHelper'),
-	validators = require.main.require('libs/validators/chunked-upload-validators');
+	apiModels = require('../libs/models/apiModels'),
+	errorModels = require('../libs/models/errorModels'),
+	guidHelper = require('../libs/helpers/guidHelper'),
+	typeHelper = require('../libs/helpers/typeHelper'),
+	stringHelper = require('../libs/helpers/stringHelper'),
+	validators = require('../libs/validators/chunked-upload-validators');
 	
 var	debug = false,
 	routePrefix = '/chunked/upload',

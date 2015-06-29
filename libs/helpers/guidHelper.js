@@ -1,5 +1,5 @@
 /* global process */
-var typeHelper = require.main.require('libs/helpers/typeHelper');
+var typeHelper = require('../helpers/typeHelper');
 
 var nanoToSeconds = function(nano) {
 	return parseFloat(nano) / 1000000000;
