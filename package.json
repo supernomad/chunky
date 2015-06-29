@@ -1,5 +1,5 @@
 {
-  "name": "chunky",
+  "name": "chunkyjs",
   "version": "0.2.2",
   "description": "An async upload/download nodejs library leveraging express.js and socket.io. Provides standard, chunked, and udp style transfers.",
   "main": "chunky.js",
