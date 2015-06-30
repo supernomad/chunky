@@ -6,10 +6,13 @@
 
 [![NPM](https://nodei.co/npm/chunkyjs.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/chunkyjs/)
 # chunkyjs
-An async upload/download node library leveraging express.js, which provides chunked transfer api's. This library was designed to abstract away the intricacies of providing a chunked transfer api. 
- 
+An async upload/download node library leveraging express.js, which provides chunked transfer api's.
+
+What do we mean by a chunked transfer api? Well, what chunkyjs does is provide an api interface that allows downloading or uploading multiple chunks of a file at the same time. This effectively allows you to multi-thread your applications data transfer logic.
+
+chunkyjs also comes with prebuilt nodejs/iojs and web browser clients that can be used to facilitate access to the api in a front-end environment.
 ### Installation
-Installation is the same as any other module, however expressjs is currently required to use the library.
+Installation is the same as any other module.
 ```
 	npm install chunkyjs
 ```
@@ -24,12 +27,5 @@ Basic usage of chunkyjs is as simple as requiring the module and passing it into
 	app.listen(8080);
 ```
 
-### Caching
-There is currently only support for caching transfer data locally. This uses `node-cache` under the hood for now, but in an upcoming release there will be support for both `redis` and `mongoDb`.
-
-### Options
-``` js
-	{
-		debug: false
-	}
-```
+### Datastore
+chunkyjs is currently employing `node-cache` in order to store transfer specific metadata. This is great for development, however means that chunkyjs in its current state cannot be clustered. Support for clustered datastores is on the way.
