@@ -47,5 +47,8 @@
     "body-parser": "~1.13.1",
     "multer": "~0.1.8",
     "async": "~1.2.1"
+  },
+  "peerDependencies": {
+    "express": "~4.13.0"
   }
 }
