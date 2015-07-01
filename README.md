@@ -29,3 +29,12 @@ Basic usage of chunkyjs is as simple as requiring the module and passing it into
 
 ### Datastore
 chunkyjs is currently employing `node-cache` in order to store transfer specific metadata. This is great for development, however means that chunkyjs in its current state cannot be clustered. Support for clustered datastores is on the way.
+
+### Contributing
+We would love to have contributors, please just fork our master branch, and then make your changes. When you are done open up a PR.
+
+A few guide lines:
+- We want to maintain a status quo when it comes to the code in chunkyjs. So any PR should satisfy our codacy rules, and maintain the `A` ranking we currently have.
+- Again to maintain the status quo all PR's should contain unit-tests that test the piece of additional funcationality or bug fix(s).
+- Lastly all PR's should work as intended :)
+- Other than that happy coding
