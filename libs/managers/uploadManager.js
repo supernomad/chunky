@@ -10,7 +10,7 @@ function createUpload(uploadRequest, ttl, done) {
 	var upload = new apiModels.Upload(uploadRequest);
 
 	async.waterfall([
-		function(callback) {
+		function createUploadInCache(callback) {
 			dataCache.create(upload.id, upload, ttl, function (error, success) {
 				if(!success) {
 					callback(errorModels.ServerError());
@@ -19,7 +19,7 @@ function createUpload(uploadRequest, ttl, done) {
 				}
 			});
 		},
-		function(upload, callback) {
+		function createTemporaryFile(upload, callback) {
 			var buff = new Buffer(upload.fileSize);
 			buff.fill(0);
 			
@@ -27,7 +27,7 @@ function createUpload(uploadRequest, ttl, done) {
 				callback(error, upload);
 			});
 		}
-	], function(error, upload) {
+	], function uploadCreated(error, upload) {
 		done(error, upload);
 	});
 }
@@ -47,15 +47,7 @@ function restoreUpload(uploadId, done) {
 function updateUpload(uploadId, index, file, ttl, done) {
 	async.waterfall([
 		function(callback) {
-			dataCache.restore(uploadId, function(error, upload) {
-				if(typeHelper.doesExist(error)) {
-					callback(error);
-				} else if(!typeHelper.doesExist(upload.value)) {
-					callback(errorModels.UploadMissing());
-				} else {
-					callback(null, upload.value);
-				}
-			});
+			restoreUpload(uploadId, callback);
 		},
 		function(upload, callback) {
 			upload.chunks[index] = true;
@@ -80,8 +72,8 @@ function updateUpload(uploadId, index, file, ttl, done) {
 			});
 		},
 		function(upload, callback) {
-			async.every(upload.chunks, function(item, call) {
-				call(item === true);
+			async.every(upload.chunks, function(item, isTrue) {
+				isTrue(item === true);
 			}, function(result) {
 				callback(null, upload, result);
 			});
@@ -114,9 +106,7 @@ function updateUpload(uploadId, index, file, ttl, done) {
 function deleteUpload(uploadId, done) {
 	async.waterfall([
 		function(callback) {
-			dataCache.restore(uploadId, function name(error, upload) {
-				callback(error, upload);
-			});
+			restoreUpload(uploadId, callback);
 		},
 		function(upload, callback) {
 			dataCache.delete(upload.id, function (error) {
