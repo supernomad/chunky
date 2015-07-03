@@ -7,19 +7,30 @@ var	async = require('async'),
 describe('chunked-upload-routes.js', function() {
 	var io_mock = require.main.require('mocks/libs/io'),
 		cache_mock = require.main.require('mocks/libs/caching/localCache'),
-		routes = require.main.require('routes/chunked-upload-routes')(cache_mock, io_mock, {debug:true, routePrefix:'/chunked/upload'}),
+		routes = require.main.require('routes/chunked-upload-routes')(cache_mock, io_mock, {debug:true, routePrefix:'/chunked/upload', maxSize: 2147483648, defaultTtl: 3600}),
 		uploadId = null;
 	
 	afterEach('reset the cache_mock', function() {
 		cache_mock.setReturnValue(true);
-		cache_mock.setReturnErrorOnDelete(false);
-		cache_mock.setReturnErrorOnRestore(false);
-		cache_mock.setReturnErrorOnCreate(false);
+		cache_mock.setErrorValue(false);
 	});
 	
 	it('should return a route object', function() {
 		should.exist(routes);
 		routes.should.be.a.Object();
+	});
+	
+	it('should handle missing options', function() {
+		var testRoutes = require.main.require('routes/chunked-upload-routes')(cache_mock, io_mock, {routePrefix:'/chunked/upload', maxSize: 2147483648, defaultTtl: 3600});
+		should.exist(testRoutes);
+		testRoutes = require.main.require('routes/chunked-upload-routes')(cache_mock, io_mock, {debug:true, maxSize: 2147483648, defaultTtl: 3600});
+		should.exist(testRoutes);
+		testRoutes = require.main.require('routes/chunked-upload-routes')(cache_mock, io_mock, {debug:true, routePrefix:'/chunked/upload', defaultTtl: 3600});
+		should.exist(testRoutes);
+		testRoutes = require.main.require('routes/chunked-upload-routes')(cache_mock, io_mock, {debug:true, routePrefix:'/chunked/upload', maxSize: 2147483648});
+		should.exist(testRoutes);
+		testRoutes = require.main.require('routes/chunked-upload-routes')(cache_mock, io_mock);
+		should.exist(testRoutes);
 	});
 	
 	describe('#POST', function() {
@@ -148,7 +159,7 @@ describe('chunked-upload-routes.js', function() {
 		});
 		
 		it('should handle an error thrown by the cache', function() {
-			cache_mock.setReturnErrorOnRestore(true);
+			cache_mock.setErrorValue(true);
 			routes.get.handler({
 				params: {
 					uploadId: guidHelper.newGuid()
@@ -175,7 +186,27 @@ describe('chunked-upload-routes.js', function() {
 		});
 		
 		it('should handle an error thrown by the cache updating an upload', function() {
-			cache_mock.setReturnErrorOnCreate(true);
+			cache_mock.setErrorValue(true);
+			routes.put.handler({
+				params: {
+					uploadId: uploadId,
+					index: 0
+				},
+				files: {
+					testFile: {
+						path: 'random/path/to/nothing'
+					}
+				}
+			},	{
+				json: function() {
+				}
+			}, function(error) {
+				should.exist(error);
+				error.should.be.an.instanceOf(Error);
+			});
+		});
+		
+		it('should handle unexpected function/property names in the files object', function() {
 			routes.put.handler({
 				params: {
 					uploadId: uploadId,
@@ -355,7 +386,7 @@ describe('chunked-upload-routes.js', function() {
 		});
 		
 		it('should handle an error thrown by the cache restoring an upload', function() {
-			cache_mock.setReturnErrorOnRestore(true);
+			cache_mock.setErrorValue(true);
 			routes.put.handler({
 				params: {
 					uploadId: guidHelper.newGuid(),
@@ -388,20 +419,22 @@ describe('chunked-upload-routes.js', function() {
 		});
 		
 		it('should remove the specified upload from the cache and disk', function(done) {
-			routes.delete.handler({
-				params: {
-					uploadId: uploadId
-				}
-			}, {
-				json: function(data) {
-					should.exist(data);
-					should.exist(data.data);
-					data.data.should.be.a.String();
-					data.data.should.equal('Upload: ' + uploadId + ', deleted successfuly.');
-					done();
-				}
-			}, function(error) {
-				should.not.exist(error);
+			cache_mock.create(uploadId, {}, 3600, function() {
+				routes.delete.handler({
+					params: {
+						uploadId: uploadId
+					}
+				}, {
+					json: function(data) {
+						should.exist(data);
+						should.exist(data.data);
+						data.data.should.be.a.String();
+						data.data.should.equal('Upload: ' + uploadId + ', deleted successfuly.');
+						done();
+					}
+				}, function(error) {
+					should.not.exist(error);
+				});
 			});
 		});
 		
@@ -424,7 +457,7 @@ describe('chunked-upload-routes.js', function() {
 		it('should throw a UploadMissing error if the supplied uploadId does not exist', function(done) {
 			routes.delete.handler({
 				params: {
-					uploadId: 'uploadId'
+					uploadId: guidHelper.newGuid()
 				}
 			},	{
 				json: function() {
@@ -438,7 +471,7 @@ describe('chunked-upload-routes.js', function() {
 		});
 		
 		it('should throw a ServerError if the cache fails to restore an existing upload', function(done) {
-			cache_mock.setReturnErrorOnDelete(true);
+			cache_mock.setErrorValue(true);
 			routes.delete.handler({
 				params: {
 					uploadId: uploadId

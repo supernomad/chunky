@@ -1,119 +1,52 @@
-/* global Buffer */
-var async = require('async'),
-	apiModels = require('../libs/models/apiModels'),
+var apiModels = require('../libs/models/apiModels'),
 	errorModels = require('../libs/models/errorModels'),
 	guidHelper = require('../libs/helpers/guidHelper'),
 	typeHelper = require('../libs/helpers/typeHelper'),
 	stringHelper = require('../libs/helpers/stringHelper'),
+	downloadManager = null,
 	validators = require('../libs/validators/chunked-download-validators');
 	
 var	debug = false,
-	routePrefix = '/chunked/download',
+	routePrefix = '/chunked',
 	defaultTtl = 3600,
-	chunkSize = 1024,
-	io = null,
-	dataCache = null;
+	chunkSize = 1024;
 
 var routes = {
-	'get': new apiModels.RouteHandler(routePrefix + '/:downloadId/:index', function (req, res, next) {
+	'get': new apiModels.RouteHandler(routePrefix + '/download/:downloadId/:index', function (req, res, next) {
 		var index = parseInt(req.params.index);
 		if (!guidHelper.isGuid(req.params.downloadId)){
 			next(errorModels.ValidationError('The supplied downloadId is not a valid v4 GUID'));	
 		} else if (!typeHelper.isNumber(index)) {
 			next(errorModels.ValidationError('The supplied index is not a valid number'));
 		} else {
-			async.waterfall([
-				function(callback) {
-					dataCache.restore(req.params.downloadId, function(error, download) {
-						if(typeHelper.doesExist(error)) {
-							callback(error);
-						} else if (typeHelper.doesExist(download.value)) {
-							download.value.chunks[index] = true;
-							callback(null, download.value);
-						} else {
-							callback(errorModels.DownloadMissing());
-						}
-					});
-				},
-				function(download, callback) {
-					dataCache.update(download.id, download, defaultTtl, function(error, success) {
-						callback(error, download, success);
-					});
-				},
-				function(download, success, callback) {
-					if(success) {
-						var buff = new Buffer(chunkSize);
-						io.ReadFileChunk(download.path, buff, 0, buff.length, index * chunkSize, function(error, read, buffer) {
-							callback(error, buffer);
-						});
-					} else {
-						callback(errorModels.ServerError());
-					}
-				}
-			], function(error, result) {
+			downloadManager.updateDownload(req.params.downloadId, index, chunkSize, defaultTtl, function(error, buffer) {
 				if(typeHelper.doesExist(error)) {
 					next(error);
 				} else {
-					res.send(result);
+					res.send(buffer);
 				}
 			});
 		}
 	}),
-	'post': new apiModels.RouteHandler(routePrefix, function(req, res, next) {
+	'post': new apiModels.RouteHandler(routePrefix + '/download', function(req, res, next) {
 		var valid = validators.validateDownloadRequest(req.body);
 		if(valid !== validators.valid) {
 			next(errorModels.ValidationError(valid));
 		} else {
-			async.waterfall([
-				function(callback) {
-					io.GetFileStats(req.body.path, function(error, stats) {
-						if(typeHelper.doesExist(error)) {
-							callback(error);
-						} else {
-							var download = new apiModels.Download(req.body, stats.size, chunkSize);
-							download.configure(guidHelper.newGuid());
-							callback(null, download);
-						}
-					});
-				},
-				function(download, callback) {
-					dataCache.create(download.id, download, defaultTtl, function(error, success) {
-						callback(error, download, success);
-					});
-				}
-			], function(error, download, success) {
+			downloadManager.createDownload(req.body, chunkSize, defaultTtl, function(error, download){
 				if(typeHelper.doesExist(error)) {
 					next(error);
-				} else if(success) {
-					res.json(new apiModels.ApiResponse(routePrefix, {}, download));
 				} else {
-					next(errorModels.ServerError());
-				}
+					res.json(new apiModels.ApiResponse(routePrefix, {}, download));
+				} 
 			});
 		}
 	}),
-	'delete': new apiModels.RouteHandler(routePrefix + '/:downloadId', function (req, res, next) {
+	'delete': new apiModels.RouteHandler(routePrefix + '/download/:downloadId', function (req, res, next) {
 		if (!guidHelper.isGuid(req.params.downloadId)){
 			next(errorModels.ValidationError('The supplied downloadId is not a valid v4 GUID'));	
 		} else {
-			async.waterfall([
-				function(callback) {
-					dataCache.restore(req.params.downloadId, function(error, download) {
-						if(typeHelper.doesExist(error)) {
-							callback(error);
-						} else if (typeHelper.doesExist(download.value)) {
-							callback(null, download.value);
-						} else {
-							callback(errorModels.DownloadMissing());
-						}
-					});
-				},
-				function(download, callback) {
-					dataCache.delete(download.id, function(error) {
-						callback(error, download);
-					});
-				}
-			], function(error) {
+			downloadManager.deleteDownload(req.params.downloadId, function(error) {
 				if(typeHelper.doesExist(error)) {
 					next(error);
 				} else {
@@ -135,7 +68,7 @@ var routes = {
 	})
 };
 
-function configure(cache, storage, options) {
+function configure(cache, io, options) {
 	if(typeHelper.isObject(options)) {
 		if(typeHelper.isBoolean(options.debug)){
 			debug = options.debug;
@@ -146,10 +79,13 @@ function configure(cache, storage, options) {
 		if(typeHelper.isNumber(options.chunkSize)) {
 			chunkSize = options.chunkSize;
 		}
+		if(typeHelper.isNumber(options.defaultTtl)) {
+			defaultTtl = options.defaultTtl;
+		}
 	}
-	
-	io = storage;
-	dataCache = cache;
+
+	downloadManager = require('./../libs/managers/downloadManager')(cache, io);
 	return routes;
 };
+
 module.exports = configure;

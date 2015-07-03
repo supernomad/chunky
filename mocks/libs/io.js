@@ -1,48 +1,46 @@
 /* global Buffer */
-var returnErrorOnGetFileStats = false;
+var fileSize = 1024,
+	errorValue = null;
 
-function setReturnErrorOnGetFileStats(value) {
-	returnErrorOnGetFileStats = value;
+function setFileSize(size) {
+	fileSize = size;
+}
+
+function setErrorValue(shouldError) {
+	errorValue = shouldError ? new Error('Random Error') : null; 
 }
 
 function getFileStats(path, callback) {
-	if(path.indexOf('chunksize') !== -1) {
-		callback(returnErrorOnGetFileStats ? new Error('RandomError') : null, {
-			size: 1025
-		});
-	} else {
-		callback(returnErrorOnGetFileStats ? new Error('RandomError') : null, {
-			size: 1024
-		});
-	}
+	callback(errorValue, { size: fileSize });
 }
 
 function createFile(path, buffer, offset, length, callback) {
-	callback(null);
+	callback(errorValue);
 }
 
 function writeFileChunk(path, buffer, offset, length, position, callback) {
-	callback(null);
+	callback(errorValue);
 }
 
 function deleteFile(path, callback) {
-	callback(null);
+	callback(errorValue);
 }
 
 function readFile(path, callback) {
-	callback(null, new Buffer(0));
+	callback(errorValue, new Buffer(0));
 }
 
 function renameFile(path, newPath, callback) {
-	callback(null);
+	callback(errorValue);
 }
 
-function readFileChunk(path, buffer, offset, length, position, callback) {	
-	callback(null, buffer.length, buffer);
+function readFileChunk(path, buffer, offset, length, position, callback) {
+	callback(errorValue, buffer.length, buffer);
 }
 
 module.exports = {
-	setReturnErrorOnGetFileStats: setReturnErrorOnGetFileStats,
+	setFileSize: setFileSize,
+	setErrorValue: setErrorValue,
 	GetFileStats: getFileStats,
 	CreateFile: createFile,
 	WriteFileChunk: writeFileChunk,

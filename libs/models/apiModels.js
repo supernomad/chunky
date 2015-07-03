@@ -1,3 +1,5 @@
+var guidHelper = require('./../helpers/guidHelper');
+
 function routeHandler(uri, handler) {
 	var self = this;
 	self.uri = uri;
@@ -17,7 +19,7 @@ function apiResponse(api, meta, data) {
 
 function upload(request) {
 	var self = this;
-    self.id = '';
+    self.id = guidHelper.newGuid();
 	self.fileName = request.fileName;
 	self.fileSize = request.fileSize;
 	self.destination = request.destination;
@@ -27,31 +29,25 @@ function upload(request) {
 	self.count = request.count;
 	self.chunks = [];
 
-	self.configure = function(id) {
-		self.id = id;
-		for (var i = 0; i < self.count; i++) {
-			self.chunks.push(false);
-		};
-		self.tempPath = self.destination + '/' + self.id;
-		self.finalPath = self.destination + '/' + self.fileName;
+	for (var i = 0; i < self.count; i++) {
+		self.chunks.push(false);
 	};
+	
+	self.tempPath = self.destination + '/' + self.id;
+	self.finalPath = self.destination + '/' + self.fileName;
 }
 
 function download(request, size, chunkSize) {
 	var self = this;
-	self.id = '';
+    self.id = guidHelper.newGuid();
 	self.path = request.path;
 	self.fileSize = size; 
 	self.chunkSize = chunkSize;
 	self.count = (size / chunkSize) + (size % chunkSize > 0 ? 1 : 0);
 	self.chunks = [];
-	
-	self.configure = function(id) {
-		self.id = id;
-		for (var i = 0; i < self.count; i++) {
-			self.chunks.push(false);
-		}
-	};
+	for (var i = 0; i < self.count; i++) {
+		self.chunks.push(false);
+	}
 }
 
 module.exports = {
