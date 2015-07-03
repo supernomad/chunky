@@ -388,20 +388,22 @@ describe('chunked-upload-routes.js', function() {
 		});
 		
 		it('should remove the specified upload from the cache and disk', function(done) {
-			routes.delete.handler({
-				params: {
-					uploadId: uploadId
-				}
-			}, {
-				json: function(data) {
-					should.exist(data);
-					should.exist(data.data);
-					data.data.should.be.a.String();
-					data.data.should.equal('Upload: ' + uploadId + ', deleted successfuly.');
-					done();
-				}
-			}, function(error) {
-				should.not.exist(error);
+			cache_mock.create(uploadId, {}, 3600, function() {
+				routes.delete.handler({
+					params: {
+						uploadId: uploadId
+					}
+				}, {
+					json: function(data) {
+						should.exist(data);
+						should.exist(data.data);
+						data.data.should.be.a.String();
+						data.data.should.equal('Upload: ' + uploadId + ', deleted successfuly.');
+						done();
+					}
+				}, function(error) {
+					should.not.exist(error);
+				});
 			});
 		});
 		
@@ -424,7 +426,7 @@ describe('chunked-upload-routes.js', function() {
 		it('should throw a UploadMissing error if the supplied uploadId does not exist', function(done) {
 			routes.delete.handler({
 				params: {
-					uploadId: 'uploadId'
+					uploadId: guidHelper.newGuid()
 				}
 			},	{
 				json: function() {
