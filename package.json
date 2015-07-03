@@ -4,7 +4,7 @@
   "description": "An async upload/download nodejs library leveraging express.js and socket.io. Provides standard, chunked, and udp style transfers.",
   "main": "chunky.js",
   "scripts": {
-    "test": "grunt build"
+    "test": "grunt"
   },
   "repository": {
     "type": "git",
@@ -34,10 +34,7 @@
     "grunt-coveralls": "~1.0.0",
     "grunt-contrib-watch": "~0.6.1",
     "grunt-mkdir": "~0.1.2",
-    "grunt-remove": "~0.1.0",
     "supertest": "~1.0.1",
-    "mockery": "~1.4.0",
-    "sinon": "~1.15.3",
     "grunt-codacy": "~1.1.0",
     "should": "~7.0.1"
   },

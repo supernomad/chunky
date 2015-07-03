@@ -15,7 +15,7 @@ module.exports = function(grunt) {
         },
         watch: {
             files: ['test/**/*tests.js'],
-            tasks: ['default'],
+            tasks: ['test'],
         },
         mocha_istanbul: {
             coverage: {
@@ -27,7 +27,7 @@ module.exports = function(grunt) {
                 force: true
             },
             coverage: {
-                src: 'coverage/*.info'
+                src: 'coverage/lcov.info'
             }
         },
         codacy: {
@@ -39,6 +39,10 @@ module.exports = function(grunt) {
         }
     });
 
-    grunt.registerTask('build', ['mkdir:testDir', 'mocha_istanbul:coverage', 'coveralls:coverage', 'codacy:coverage']);
-    grunt.registerTask('default', ['mkdir:testDir', 'mocha_istanbul:coverage']);
+    grunt.registerTask('test', ['mkdir:testDir', 'mocha_istanbul:coverage']);
+    grunt.registerTask('codacy', ['codacy:coverage']);
+    grunt.registerTask('coveralls', ['coveralls:coverage']);
+    
+    grunt.registerTask('ci', ['test', 'codacy', 'coveralls']);
+    grunt.registerTask('default', ['test']);
 };
