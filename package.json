@@ -5,7 +5,7 @@
   "main": "chunky.js",
   "scripts": {
     "test": "grunt",
-    "postversion": "git push --tags"
+    "postversion": "git push --tags && npm publish"
   },
   "repository": {
     "type": "git",
