@@ -52,12 +52,10 @@ function updateUpload(uploadId, index, file, ttl, done) {
 		function(upload, callback) {
 			upload.chunks[index] = true;
 			dataCache.update(upload.Id, upload, ttl, function(error, success) {
-				if(typeHelper.doesExist(error)) {
-					callback(error);
-				} else if(!success) {
+				if(!success) {
 					callback(errorModels.ServerError());
 				} else {
-					callback(null, upload);
+					callback(error, upload);
 				}
 			});
 		},

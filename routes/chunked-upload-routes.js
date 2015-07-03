@@ -51,10 +51,7 @@ var routes = {
 		} else {
 			var file = {};
 			for (var key in req.files) {
-				if (req.files.hasOwnProperty(key)) {
-					file = req.files[key];
-					break;
-				}
+				file = req.files[key];
 			}
 			uploadManager.updateUpload(req.params.uploadId, index, file, defaultTtl, function(error, upload, complete) {
 				if(typeHelper.doesExist(error)) {

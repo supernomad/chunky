@@ -7,18 +7,32 @@ var	async = require('async'),
 describe('chunked-download-routes.js', function() {
 	var io_mock = require.main.require('mocks/libs/io'),
 		cache_mock = require.main.require('mocks/libs/caching/localCache'),
-		routes = require.main.require('routes/chunked-download-routes')(cache_mock, io_mock, {debug:true, routePrefix:'/chunked/download', chunkSize: 1024}),
+		routes = require.main.require('routes/chunked-download-routes')(cache_mock, io_mock, {debug:true, routePrefix:'/chunked/download', chunkSize: 1024, defaultTtl: 3600}),
 		downloadId = null;
 	
 	afterEach('reset the cache_mock', function() {
 		cache_mock.setReturnValue(true);
-		cache_mock.setReturnErrorOnRestore(false);
-		io_mock.setReturnErrorOnGetFileStats(false);
+		cache_mock.setErrorValue(false);
+		io_mock.setErrorValue(false);
+		io_mock.setFileSize(1024);
 	});
 	
 	it('should return a route object', function() {
 		should.exist(routes);
 		routes.should.be.a.Object();
+	});
+	
+	it('should handle missing options', function() {
+		var testRoutes = require.main.require('routes/chunked-download-routes')(cache_mock, io_mock, {routePrefix:'/chunked/download', chunkSize: 1024, defaultTtl: 3600});
+		should.exist(testRoutes);
+		testRoutes = require.main.require('routes/chunked-download-routes')(cache_mock, io_mock, {debug:true, chunkSize: 1024, defaultTtl: 3600});
+		should.exist(testRoutes);
+		testRoutes = require.main.require('routes/chunked-download-routes')(cache_mock, io_mock, {debug:true, routePrefix:'/chunked/download', defaultTtl: 3600});
+		should.exist(testRoutes);
+		testRoutes = require.main.require('routes/chunked-download-routes')(cache_mock, io_mock, {debug:true, routePrefix:'/chunked/download'});
+		should.exist(testRoutes);
+		testRoutes = require.main.require('routes/chunked-download-routes')(cache_mock, io_mock);
+		should.exist(testRoutes);
 	});
 	
 	describe('#POST', function() {
@@ -54,6 +68,7 @@ describe('chunked-download-routes.js', function() {
 		});
 		
 		it('should create a new download if the request object is considered valid', function(done) {
+			io_mock.setFileSize(1025);
 			routes.post.handler({
 				body: {
 					path: '/i/am/a/path/to/a/chunksize'
@@ -92,7 +107,7 @@ describe('chunked-download-routes.js', function() {
 		});
 		
 		it('should throw a ServerError if the file stats cannot be found', function(done) {
-			io_mock.setReturnErrorOnGetFileStats(true);
+			io_mock.setErrorValue(true);
 			routes.post.handler({
 				body: {
 					path: '/i/am/a/path/to/a/destination'
@@ -171,7 +186,7 @@ describe('chunked-download-routes.js', function() {
 		});
 		
 		it('should throw a ServerError if the cache fails to retrieve the download data', function(done) {
-			cache_mock.setReturnErrorOnRestore(true);
+			cache_mock.setErrorValue(true);
 			routes.get.handler({
 				params: {
 					downloadId: downloadId,
@@ -253,7 +268,7 @@ describe('chunked-download-routes.js', function() {
 		});
 		
 		it('should throw a ServerError if the cache fails to restore the download data', function(done) {
-			cache_mock.setReturnErrorOnRestore(true);
+			cache_mock.setErrorValue(true);
 			routes.delete.handler({
 				params: {
 					downloadId: downloadId
