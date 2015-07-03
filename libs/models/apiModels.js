@@ -39,19 +39,15 @@ function upload(request) {
 
 function download(request, size, chunkSize) {
 	var self = this;
-	self.id = '';
+    self.id = guidHelper.newGuid();
 	self.path = request.path;
 	self.fileSize = size; 
 	self.chunkSize = chunkSize;
 	self.count = (size / chunkSize) + (size % chunkSize > 0 ? 1 : 0);
 	self.chunks = [];
-	
-	self.configure = function(id) {
-		self.id = id;
-		for (var i = 0; i < self.count; i++) {
-			self.chunks.push(false);
-		}
-	};
+	for (var i = 0; i < self.count; i++) {
+		self.chunks.push(false);
+	}
 }
 
 module.exports = {

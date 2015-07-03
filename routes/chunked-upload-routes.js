@@ -1,6 +1,4 @@
-/* global Buffer */
-var async = require('async'),
-	apiModels = require('../libs/models/apiModels'),
+var apiModels = require('../libs/models/apiModels'),
 	errorModels = require('../libs/models/errorModels'),
 	guidHelper = require('../libs/helpers/guidHelper'),
 	typeHelper = require('../libs/helpers/typeHelper'),
