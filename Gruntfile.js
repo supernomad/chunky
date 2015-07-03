@@ -40,9 +40,8 @@ module.exports = function(grunt) {
     });
 
     grunt.registerTask('test', ['mkdir:testDir', 'mocha_istanbul:coverage']);
-    grunt.registerTask('codacy', ['codacy:coverage']);
-    grunt.registerTask('coveralls', ['coveralls:coverage']);
+    grunt.registerTask('coverage', ['codacy:coverage', 'coveralls:coverage']);
     
-    grunt.registerTask('ci', ['test', 'codacy', 'coveralls']);
+    grunt.registerTask('ci', ['test', 'coverage']);
     grunt.registerTask('default', ['test']);
 };
