@@ -27,7 +27,7 @@ module.exports = function(grunt) {
                 force: true
             },
             coverage: {
-                src: 'coverage/lcov.info'
+                src: 'coverage/*.info'
             }
         },
         codacy: {
