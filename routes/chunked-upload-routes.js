@@ -8,14 +8,14 @@ var async = require('async'),
 	validators = require('../libs/validators/chunked-upload-validators');
 	
 var	debug = false,
-	routePrefix = '/chunked/upload',
+	routePrefix = '/chunked',
 	defaultTtl = 3600,
-	maxSize = 1024 * 1024 * 1024 * 2,
+	maxSize = 2147483648,
 	io = null,
 	dataCache = null;
 
 var routes = {
-	'get': new apiModels.RouteHandler(routePrefix + '/:uploadId', function (req, res, next) {
+	'get': new apiModels.RouteHandler(routePrefix + '/upload/:uploadId', function (req, res, next) {
 		if (!guidHelper.isGuid(req.params.uploadId)) {
 			next(errorModels.ValidationError('The supplied uploadId is not a valid v4 GUID'));	
 		} else {
@@ -30,7 +30,7 @@ var routes = {
 			});
 		}
 	}),
-	'post': new apiModels.RouteHandler(routePrefix, function (req, res, next) {
+	'post': new apiModels.RouteHandler(routePrefix + '/upload', function (req, res, next) {
 		var validity = validators.validateUploadRequest(req.body, maxSize);
 		if(validity !== validators.valid) {
 			next(errorModels.ValidationError(validity));
@@ -65,7 +65,7 @@ var routes = {
 			});
 		}
 	}),
-	'put': new apiModels.RouteHandler(routePrefix + '/:uploadId/:index', function (req, res, next) {
+	'put': new apiModels.RouteHandler(routePrefix + '/upload/:uploadId/:index', function (req, res, next) {
 		var validity = validators.validateChunkRequest(req);
 		var index = parseInt(req.params.index);
 		if(validity !== validators.valid) {
@@ -155,7 +155,7 @@ var routes = {
 			});
 		}
 	}),
-	'delete': new apiModels.RouteHandler(routePrefix + '/:uploadId', function (req, res, next) {
+	'delete': new apiModels.RouteHandler(routePrefix + '/upload/:uploadId', function (req, res, next) {
 		if (!guidHelper.isGuid(req.params.uploadId)){
 			next(errorModels.ValidationError('The supplied uploadId is not a valid v4 GUID'));	
 		} else {
@@ -204,6 +204,12 @@ function configure(cache, storage, options) {
 		}
 		if(typeHelper.isString(options.routePrefix)){
 			routePrefix = stringHelper.stripTrailingSlashes(options.routePrefix);
+		}
+		if(typeHelper.isNumber(options.maxSize)) {
+			maxSize = options.maxSize;
+		}
+		if(typeHelper.isNumber(options.defaultTtl)) {
+			defaultTtl = options.defaultTtl;
 		}
 	}
 	

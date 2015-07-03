@@ -8,14 +8,14 @@ var async = require('async'),
 	validators = require('../libs/validators/chunked-download-validators');
 	
 var	debug = false,
-	routePrefix = '/chunked/download',
+	routePrefix = '/chunked',
 	defaultTtl = 3600,
 	chunkSize = 1024,
 	io = null,
 	dataCache = null;
 
 var routes = {
-	'get': new apiModels.RouteHandler(routePrefix + '/:downloadId/:index', function (req, res, next) {
+	'get': new apiModels.RouteHandler(routePrefix + '/download/:downloadId/:index', function (req, res, next) {
 		var index = parseInt(req.params.index);
 		if (!guidHelper.isGuid(req.params.downloadId)){
 			next(errorModels.ValidationError('The supplied downloadId is not a valid v4 GUID'));	
@@ -59,7 +59,7 @@ var routes = {
 			});
 		}
 	}),
-	'post': new apiModels.RouteHandler(routePrefix, function(req, res, next) {
+	'post': new apiModels.RouteHandler(routePrefix + '/download', function(req, res, next) {
 		var valid = validators.validateDownloadRequest(req.body);
 		if(valid !== validators.valid) {
 			next(errorModels.ValidationError(valid));
@@ -92,7 +92,7 @@ var routes = {
 			});
 		}
 	}),
-	'delete': new apiModels.RouteHandler(routePrefix + '/:downloadId', function (req, res, next) {
+	'delete': new apiModels.RouteHandler(routePrefix + '/download/:downloadId', function (req, res, next) {
 		if (!guidHelper.isGuid(req.params.downloadId)){
 			next(errorModels.ValidationError('The supplied downloadId is not a valid v4 GUID'));	
 		} else {
@@ -145,6 +145,9 @@ function configure(cache, storage, options) {
 		}
 		if(typeHelper.isNumber(options.chunkSize)) {
 			chunkSize = options.chunkSize;
+		}
+		if(typeHelper.isNumber(options.defaultTtl)) {
+			defaultTtl = options.defaultTtl;
 		}
 	}
 	
