@@ -50,10 +50,22 @@ function download(request, size, chunkSize) {
 	}
 }
 
+function transfer(transferType, path, fileSize, fileName) {
+	var self = this;
+	self.id = guidHelper.newGuid();
+	self.type = transferType;
+	self.name = fileName;
+	self.path = path;
+	self.temp = path + '/' + self.id;
+	self.size = fileSize;
+	self.chunks = [];
+}
+
 module.exports = {
 	RouteHandler: routeHandler,
 	ErrorHandler: errorHandler,
 	ApiResponse: apiResponse,
 	Upload: upload,
-	Download: download
+	Download: download,
+	Transfer: transfer
 };
