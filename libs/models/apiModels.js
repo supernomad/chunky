@@ -59,6 +59,13 @@ function transfer(transferType, path, fileSize, fileName) {
 	self.temp = path + '/' + self.id;
 	self.size = fileSize;
 	self.chunks = [];
+	Object.defineProperty(self, 'complete', { get: function () {
+		var recieved = 0;
+		for (var i = 0; i < this.chunks.length; i++) {
+			recieved += this.chunks[i].size;
+		}
+		return self.size === recieved;
+	}});
 }
 
 module.exports = {

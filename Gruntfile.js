@@ -1,6 +1,7 @@
 module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-mocha-istanbul');
     grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-mkdir');
     grunt.loadNpmTasks('grunt-coveralls');
     grunt.loadNpmTasks('grunt-codacy');
@@ -18,8 +19,19 @@ module.exports = function(grunt) {
             tasks: ['test'],
         },
         mocha_istanbul: {
-            coverage: {
-                src: 'test/**/*tests.js'
+            unit: {
+                src: 'test/**/*tests.js',
+                options: {
+                    coverageFolder: 'coverage/unit',
+                    excludes: ['**/test/**']
+                }
+            },
+            integration: {
+                src: 'integration-test/**/*tests.js',
+                options: {
+                    coverageFolder: 'coverage/integration',
+                    excludes: ['**/integration-test/**']
+                }
             }
         },
         coveralls: {
@@ -27,21 +39,24 @@ module.exports = function(grunt) {
                 force: true
             },
             coverage: {
-                src: 'coverage/*.info'
+                src: 'coverage/**/*.info'
             }
         },
         codacy: {
             options: {
             },
             coverage: {
-                src: 'coverage/lcov.info'
+                src: 'coverage/**/*.info'
             }
-        }
+        },
+        clean: ['tmp']
     });
 
-    grunt.registerTask('test', ['mkdir:testDir', 'mocha_istanbul:coverage']);
+    grunt.registerTask('test-setup', ['mkdir:testDir']);
+    grunt.registerTask('test', ['test-setup', 'mocha_istanbul:unit', 'clean']);
+    grunt.registerTask('integration', ['test-setup', 'mocha_istanbul:integration']);
     grunt.registerTask('coverage', ['codacy:coverage', 'coveralls:coverage']);
     
-    grunt.registerTask('ci', ['test', 'coverage']);
+    grunt.registerTask('ci', ['test', 'integration', 'coverage']);
     grunt.registerTask('default', ['test']);
 };
