@@ -10,7 +10,11 @@ module.exports = function(grunt) {
         mkdir: {
             testDir: {
                 options: {
-                    create: ['tmp/tests']
+                    create: [
+                        'tmp/tests'
+                        , 'coverage/unit'
+                        , 'coverage/integration'
+                    ]
                 }
             }
         },
@@ -23,28 +27,31 @@ module.exports = function(grunt) {
                 src: 'test/**/*tests.js',
                 options: {
                     coverageFolder: 'coverage/unit',
-                    excludes: ['**/test/**']
+                    excludes: [
+                        'test/**'
+                        , 'integration-test/**'
+                        , 'Gruntfile.js'
+                    ]
                 }
             },
             integration: {
                 src: 'integration-test/**/*tests.js',
                 options: {
                     coverageFolder: 'coverage/integration',
-                    excludes: ['**/integration-test/**']
+                    excludes: [
+                        'test/**'
+                        , 'integration-test/**'
+                        , 'Gruntfile.js'
+                    ]
                 }
             }
         },
         coveralls: {
-            options: {
-                force: true
-            },
             coverage: {
                 src: 'coverage/**/*.info'
             }
         },
         codacy: {
-            options: {
-            },
             coverage: {
                 src: 'coverage/**/*.info'
             }
@@ -54,7 +61,7 @@ module.exports = function(grunt) {
 
     grunt.registerTask('test-setup', ['mkdir:testDir']);
     grunt.registerTask('test', ['test-setup', 'mocha_istanbul:unit', 'clean']);
-    grunt.registerTask('integration', ['test-setup', 'mocha_istanbul:integration']);
+    grunt.registerTask('integration', ['test-setup', 'mocha_istanbul:integration', 'clean']);
     grunt.registerTask('coverage', ['codacy:coverage', 'coveralls:coverage']);
     
     grunt.registerTask('ci', ['test', 'integration', 'coverage']);
