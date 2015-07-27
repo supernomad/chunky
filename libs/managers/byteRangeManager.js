@@ -101,7 +101,6 @@ function updateUpload(uploadId, buffer, range, ttl, done) {
 			});
 		},
 		function(upload, callback) {
-			console.log("complete: " + upload.complete);
 			if(upload.complete) {
 				async.series([
 					function(call) {
