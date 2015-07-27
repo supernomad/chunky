@@ -48,11 +48,13 @@ module.exports = function(grunt) {
         },
         coveralls: {
             coverage: {
+                force: true,
                 src: 'coverage/**/*.info'
             }
         },
         codacy: {
             coverage: {
+                force: true,
                 src: 'coverage/**/*.info'
             }
         },
