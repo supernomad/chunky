@@ -10,7 +10,6 @@ An async upload/download node library leveraging express.js, which provides chun
 
 What do we mean by a chunked transfer api? Well, what chunkyjs does is provide an api interface that allows downloading or uploading multiple chunks of a file at the same time. This effectively allows you to multi-thread your applications data transfer logic.
 
-chunkyjs also comes with prebuilt nodejs/iojs and web browser clients that can be used to facilitate access to the api in a front-end environment.
 ### Installation
 Installation is the same as any other module.
 ```
@@ -27,8 +26,22 @@ Basic usage of chunkyjs is as simple as requiring the module and passing it into
 	app.listen(8080);
 ```
 
+### Development/Testing
+```
+	git clone https://github.com/Supernomad/chunky.git
+	cd chunky/
+	npm install
+	npm install -g grunt-cli
+	grunt
+```
+
 ### Datastore
 chunkyjs is currently employing `node-cache` in order to store transfer specific metadata. This is great for development, however means that chunkyjs in its current state cannot be clustered. Support for clustered datastores is on the way.
+
+### TODO
+- Create the front-end client's
+  - Need to properly handle downloads in a browser context.
+- Create the node client's
 
 ### Contributing
 We welcome contributions, feel free to fork us and make as many PR's as you would like.
